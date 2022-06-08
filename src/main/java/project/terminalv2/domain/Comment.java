@@ -1,8 +1,7 @@
 package project.terminalv2.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import project.terminalv2.dto.CommentUpdRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,10 +10,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "comment")
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+@Builder
+public class Comment extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +27,13 @@ public class Comment {
 
     @NotBlank
     @Column
-    private LocalDateTime writeDate;
-
-    @NotBlank
-    @Column
     private String content;
 
-    @ElementCollection
-    @Column
-    private List<Long> reCommentNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Board board;
+
+    public void update(CommentUpdRequest request) {
+        this.content = request.getContent();
+    }
 }

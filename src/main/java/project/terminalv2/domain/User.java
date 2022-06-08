@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,8 +45,7 @@ public class User {
     private String phone;
 
     @ElementCollection
-    @Column
-    private List<Long> myBusTimeNos;
+    private List<Long> myBusTime;
 
 
 }

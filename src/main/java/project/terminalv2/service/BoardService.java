@@ -43,7 +43,6 @@ public class BoardService {
                 .updateDate(board.getModifiedDate())
                 .writer(board.getWriter())
                 .content(board.getContent())
-                .fileNos(board.getFileNos())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(boardDetailVo);

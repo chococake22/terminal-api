@@ -23,7 +23,10 @@ public enum ErrorCode { // 에러 종류
     NOT_ACCEPTED(HttpStatus.NOT_FOUND, "S904", "비밀번호가 틀립니다."),
 
     // 게시글이 없습니다.
-    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "S801", "게시글이 없습니다.");
+    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "S801", "게시글이 없습니다."),
+
+    // 댓글이 없습니다.
+    NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "S801", "해당 댓글이 없습니다.");
 
 
 

@@ -1,20 +1,16 @@
 package project.terminalv2.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.*;
 import project.terminalv2.dto.BoardUpdRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "board")
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -33,24 +29,15 @@ public class Board extends BaseTime {
     @Column
     private String writer;
 
-//    @CreatedDate
-//    @Column(updatable = false)
-//    private LocalDateTime writeDate;
-//
-//    @Column
-//    private LocalDateTime updateDate;
-
     @NotBlank
     @Column
     private String content;
 
-    @ElementCollection
-    @Column
-    private List<Long> fileNos;
+    @OneToMany(mappedBy = "board")
+    private List<AttachedFile> attachedFiles = new ArrayList<>();
 
-    @ElementCollection
-    @Column
-    private List<Long> commentNos;
+    @OneToMany(mappedBy = "board")
+    private List<Comment> comments = new ArrayList<>();
 
     public void update(BoardUpdRequest request) {
         this.title = request.getTitle();

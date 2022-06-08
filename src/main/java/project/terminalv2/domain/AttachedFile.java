@@ -32,4 +32,8 @@ public class AttachedFile {
     @NotBlank
     @Column(updatable = false)
     private LocalDateTime savedDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Board board;
 }
