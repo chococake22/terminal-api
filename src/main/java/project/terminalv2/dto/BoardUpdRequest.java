@@ -4,17 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 @Getter
 @Builder
-public class UserLoginRequest {
+public class BoardUpdRequest {
 
     @NotEmpty
-    @Size(min = 6, max = 15)
-    private String userId;
+    private String title;
 
     @NotEmpty
-    private String password;
+    private String content;
 
 }

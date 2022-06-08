@@ -21,7 +21,6 @@ public class UserController {
         return userService.saveUser(request);
     }
 
-
     @ApiOperation(value = "회원 목록 조회", notes = "회원 목록을 조회합니다.")
     @GetMapping("/api/v1/user/list")
     public ResponseEntity getUserList(@RequestParam Integer page, @RequestParam Integer size) {

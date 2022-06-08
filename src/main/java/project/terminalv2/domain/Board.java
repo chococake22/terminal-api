@@ -1,8 +1,11 @@
 package project.terminalv2.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import project.terminalv2.dto.BoardUpdRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +17,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Board {
+@Builder
+public class Board extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +33,12 @@ public class Board {
     @Column
     private String writer;
 
-    @NotBlank
-    @Column
-    private LocalDateTime writeDate;
-
-    @NotBlank
-    @Column
-    private LocalDateTime updateDate;
+//    @CreatedDate
+//    @Column(updatable = false)
+//    private LocalDateTime writeDate;
+//
+//    @Column
+//    private LocalDateTime updateDate;
 
     @NotBlank
     @Column
@@ -48,6 +51,11 @@ public class Board {
     @ElementCollection
     @Column
     private List<Long> commentNos;
+
+    public void update(BoardUpdRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+    }
 
 
 }
