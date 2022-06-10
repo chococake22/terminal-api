@@ -1,12 +1,12 @@
 package project.terminalv2.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 
 @Data
@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class BusTime {
 
     @Id
@@ -22,22 +23,22 @@ public class BusTime {
     private Long busTimeNo;
 
     @NotBlank
-    @Column
+    @Column(name = "start_target")
     private String startTarget;
 
     @NotBlank
-    @Column
+    @Column(name = "arrived_target")
     private String arrivedTarget;
 
     @NotBlank
-    @Column
-    private LocalDateTime startDate;
+    @Column(name = "start_date")
+    private String startDate;
 
     @NotBlank
-    @Column
+    @Column(name = "bus_corp")
     private String busCorp;
 
     @NotBlank
-    @Column
+    @Column(name = "note")
     private String note;
 }

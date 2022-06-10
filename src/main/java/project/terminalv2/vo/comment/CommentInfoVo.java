@@ -1,8 +1,7 @@
-package project.terminalv2.vo;
+package project.terminalv2.vo.comment;
 
 import lombok.Builder;
 import lombok.Data;
-import project.terminalv2.domain.Board;
 
 import java.time.LocalDateTime;
 

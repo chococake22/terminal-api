@@ -8,26 +8,27 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode { // 에러 종류
 
-    SUCCESS(HttpStatus.OK, "S900", "아이디 생성"),
-
-    // 중복된 아이디
+    // 회원 관리
+    USER_SAVE_SUCCESS(HttpStatus.OK, "S900", "아이디 생성"),
     DUPLICATED_USERID(HttpStatus.BAD_REQUEST, "S901", "이미 아이디가 존재합니다."),
-
-    // 두 비밀번호 불일치
     NOT_EQUAL_PWD(HttpStatus.BAD_REQUEST, "S902", "두 비밀번호가 다릅니다."),
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "S903", "해당 회원이 없습니다."),
+    NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "S904", "비밀번호가 틀립니다."),
 
-    // 아이디가 없다
-    NOT_FOUND(HttpStatus.NOT_FOUND, "S903", "해당 회원이 없습니다."),
-
-    // 아이디나 비밀번호가 틀립니다.
-    NOT_ACCEPTED(HttpStatus.NOT_FOUND, "S904", "비밀번호가 틀립니다."),
-
-    // 게시글이 없습니다.
+    // 게시판 관리
+    BOARD_SAVE_SUCCESS(HttpStatus.OK, "S800", "게시글 생성"),
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "S801", "게시글이 없습니다."),
+    BOARD_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S802", "권한이 없습니다."),
 
-    // 댓글이 없습니다.
-    NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "S801", "해당 댓글이 없습니다.");
+    // 댓글 관리
+    COMMENT_SAVE_SUCCESS(HttpStatus.OK, "S700", "댓글 생성"),
+    NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "S701", "해당 댓글이 없습니다."),
+    COMMENT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S702", "권한이 없습니다."),
 
+    // 버스 시간표 관리
+    BUSTIME_SAVE_SUCCESS(HttpStatus.OK, "S600", "버스 시간표 생성"),
+    NOT_FOUND_BUSTIME(HttpStatus.NOT_FOUND, "S601", "해당 시간표가 없습니다."),
+    DUPLICATED_BUSTIME(HttpStatus.BAD_REQUEST, "S602", "이미 시간표가 존재합니다.");
 
 
     private final HttpStatus status;

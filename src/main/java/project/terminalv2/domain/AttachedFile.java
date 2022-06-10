@@ -21,16 +21,16 @@ public class AttachedFile {
     private Long fileNo;
 
     @NotBlank
-    @Column
+    @Column(name = "filename")
     private String filename;
 
     @NotBlank
-    @Column
+    @Column(name = "file_save_name")
     private String fileSaveName;
 
     @CreatedDate
     @NotBlank
-    @Column(updatable = false)
+    @Column(name = "saved_date", updatable = false)
     private LocalDateTime savedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,4 +1,4 @@
-package project.terminalv2.dto;
+package project.terminalv2.dto.user;
 
 import lombok.Builder;
 import lombok.Getter;

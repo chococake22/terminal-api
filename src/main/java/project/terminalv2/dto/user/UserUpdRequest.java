@@ -1,15 +1,11 @@
-package project.terminalv2.dto;
+package project.terminalv2.dto.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class UserUpdRequest {
 

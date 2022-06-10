@@ -5,8 +5,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.terminalv2.dto.UserLoginRequest;
-import project.terminalv2.dto.UserSaveRequest;
+import project.terminalv2.dto.user.UserLoginRequest;
+import project.terminalv2.dto.user.UserSaveRequest;
 import project.terminalv2.service.UserService;
 
 @RestController

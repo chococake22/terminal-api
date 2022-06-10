@@ -1,11 +1,11 @@
-package project.terminalv2.vo;
+package project.terminalv2.vo.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-@AllArgsConstructor
 @Builder
 public class UserInfoVo {
 
@@ -14,5 +14,5 @@ public class UserInfoVo {
     private String username;
     private String email;
     private String phone;
-
+    private List<Long> myBusTime;
 }

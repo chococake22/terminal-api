@@ -12,15 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.Board;
 import project.terminalv2.domain.Comment;
-import project.terminalv2.dto.CommentSaveRequest;
-import project.terminalv2.dto.CommentUpdRequest;
+import project.terminalv2.dto.comment.CommentSaveRequest;
+import project.terminalv2.dto.comment.CommentUpdRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.respository.CommentRepository;
-import project.terminalv2.vo.CommentInfoVo;
-
-import java.util.List;
+import project.terminalv2.vo.comment.CommentInfoVo;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +37,7 @@ public class CommentService {
         Comment comment = Comment.builder()
                 .writer("apple")
                 .content(request.getContent())
-                .board(board)
+                .boardNo(boardNo)
                 .build();
 
         log.info("댓글 = {}", comment);
@@ -58,7 +56,7 @@ public class CommentService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "commentNo"));
 
-        Page<Comment> comments = commentRepository.findAllByBoardBoardNo(boardNo, pageable);
+        Page<Comment> comments = commentRepository.findAllByBoardNo(boardNo, pageable);
 
         Page<CommentInfoVo> commentInfoVos = comments.map(comment -> CommentInfoVo.builder()
                 .commentNo(comment.getCommentNo())

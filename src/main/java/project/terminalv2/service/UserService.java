@@ -1,6 +1,5 @@
 package project.terminalv2.service;
 
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,12 +12,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.User;
-import project.terminalv2.dto.UserLoginRequest;
-import project.terminalv2.dto.UserSaveRequest;
+import project.terminalv2.dto.user.UserLoginRequest;
+import project.terminalv2.dto.user.UserSaveRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.UserRepository;
-import project.terminalv2.vo.UserInfoVo;
+import project.terminalv2.vo.user.UserInfoVo;
+import springfox.documentation.spring.web.json.Json;
+
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class UserService {
 
         // 회원 검색
         User user = userRepository.findById(no)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
 
         log.info("User = {}", user);
 
@@ -106,7 +108,7 @@ public class UserService {
 
         // 해당 회원이 존재하는지 확인
         User user = userRepository.findByUserId(request.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));  // 없으면 예외처리
+                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));  // 없으면 예외처리
 
         log.info("user={}", user);
 

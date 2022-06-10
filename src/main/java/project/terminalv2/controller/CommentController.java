@@ -1,12 +1,11 @@
 package project.terminalv2.controller;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.terminalv2.dto.CommentSaveRequest;
-import project.terminalv2.dto.CommentUpdRequest;
+import project.terminalv2.dto.comment.CommentSaveRequest;
+import project.terminalv2.dto.comment.CommentUpdRequest;
 import project.terminalv2.service.CommentService;
 
 @RestController

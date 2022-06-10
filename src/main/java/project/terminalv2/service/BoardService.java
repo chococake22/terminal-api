@@ -11,13 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.Board;
-import project.terminalv2.dto.BoardSaveRequest;
-import project.terminalv2.dto.BoardUpdRequest;
+import project.terminalv2.dto.board.BoardSaveRequest;
+import project.terminalv2.dto.board.BoardUpdRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BoardRepository;
-import project.terminalv2.vo.BoardDetailVo;
-import project.terminalv2.vo.BoardInfoVo;
+import project.terminalv2.vo.board.BoardDetailVo;
+import project.terminalv2.vo.board.BoardInfoVo;
 
 @Service
 @RequiredArgsConstructor

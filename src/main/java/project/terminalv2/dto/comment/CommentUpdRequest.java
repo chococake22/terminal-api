@@ -1,14 +1,14 @@
-package project.terminalv2.dto;
+package project.terminalv2.dto.comment;
 
-
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 
 @Getter
-@NoArgsConstructor
-public class CommentSaveRequest {
+@Builder
+public class CommentUpdRequest {
 
     @NotEmpty
     private String content;

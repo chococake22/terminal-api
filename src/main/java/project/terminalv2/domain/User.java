@@ -25,27 +25,32 @@ public class User {
     private Long userNo;
 
     @NotBlank
+    @Column(name = "user_id")
     private String userId;
 
     @NotBlank
-    @Column
+    @Column(name = "password")
     private String password;
 
     @NotBlank
-    @Column
+    @Column(name = "username")
     private String username;
 
     @NotBlank
-    @Column
+    @Column(name = "email")
     @Email
     private String email;
 
     @NotBlank
-    @Column
+    @Column(name = "phone")
     private String phone;
 
-    @ElementCollection
-    private List<Long> myBusTime;
+    @OneToMany(mappedBy = "myTimeNo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MyTime> myBusTime = new ArrayList<>();
 
-
+    // 내 버스 시간표 추가 메서드
+    public void addBusTime(MyTime myTime) {
+        myBusTime.add(myTime);
+        myTime.setUser(this);
+    }
 }

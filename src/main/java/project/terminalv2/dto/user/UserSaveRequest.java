@@ -1,4 +1,4 @@
-package project.terminalv2.dto;
+package project.terminalv2.dto.user;
 
 
 import lombok.*;
@@ -8,10 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-@Data
 public class UserSaveRequest {
 
     @NotEmpty

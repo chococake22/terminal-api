@@ -1,13 +1,16 @@
-package project.terminalv2.dto;
+package project.terminalv2.dto.board;
 
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Builder
-public class BoardUpdRequest {
+public class BoardSaveRequest {
 
     @NotEmpty
     private String title;

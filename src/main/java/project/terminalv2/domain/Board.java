@@ -1,7 +1,7 @@
 package project.terminalv2.domain;
 
 import lombok.*;
-import project.terminalv2.dto.BoardUpdRequest;
+import project.terminalv2.dto.board.BoardUpdRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -22,27 +22,19 @@ public class Board extends BaseTime {
     private Long boardNo;
 
     @NotBlank
-    @Column
+    @Column(name = "title")
     private String title;
 
     @NotBlank
-    @Column
+    @Column(name = "writer")
     private String writer;
 
     @NotBlank
-    @Column
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-
-    @OneToMany(mappedBy = "board")
-    private List<AttachedFile> attachedFiles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "board")
-    private List<Comment> comments = new ArrayList<>();
 
     public void update(BoardUpdRequest request) {
         this.title = request.getTitle();
         this.content = request.getContent();
     }
-
-
 }

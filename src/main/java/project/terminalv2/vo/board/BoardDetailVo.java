@@ -1,20 +1,20 @@
-package project.terminalv2.vo;
+package project.terminalv2.vo.board;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import project.terminalv2.domain.Board;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
 @Builder
-public class BoardInfoVo {
+public class BoardDetailVo {
 
     private Long boardNo;
     private String title;
     private LocalDateTime writeDate;
+    private LocalDateTime updateDate;
     private String writer;
-
+    private String content;
+    private List<Long> fileNos;
 }
