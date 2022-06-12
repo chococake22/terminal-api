@@ -70,9 +70,6 @@ public class BusTimeService {
 
         log.info("user = {}", user);
 
-
-
-
         myTimeRepository.save(myTime);
 
         return ResponseEntity.status(HttpStatus.OK).body("내 시간표 저장 성공");

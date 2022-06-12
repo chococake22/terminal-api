@@ -48,9 +48,4 @@ public class User {
     @OneToMany(mappedBy = "myTimeNo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MyTime> myBusTime = new ArrayList<>();
 
-    // 내 버스 시간표 추가 메서드
-    public void addBusTime(MyTime myTime) {
-        myBusTime.add(myTime);
-        myTime.setUser(this);
-    }
 }

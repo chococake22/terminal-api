@@ -15,11 +15,13 @@ spring:
         format_sql: true
     open-in-view: false
 
-#swagger ??? ant_path_matcher? ??
+      #swagger ??? ant_path_matcher? ??
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+file:
+  dir: /Users/ganghyeog/desktop/files/
 
 logging:
   level:

@@ -41,6 +41,7 @@ public class CommentService {
                 .build();
 
         log.info("댓글 = {}", comment);
+        log.info("게시글 번호 = {}", boardNo);
 
         commentRepository.save(comment);
 

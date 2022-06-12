@@ -28,7 +28,10 @@ public enum ErrorCode { // 에러 종류
     // 버스 시간표 관리
     BUSTIME_SAVE_SUCCESS(HttpStatus.OK, "S600", "버스 시간표 생성"),
     NOT_FOUND_BUSTIME(HttpStatus.NOT_FOUND, "S601", "해당 시간표가 없습니다."),
-    DUPLICATED_BUSTIME(HttpStatus.BAD_REQUEST, "S602", "이미 시간표가 존재합니다.");
+    DUPLICATED_BUSTIME(HttpStatus.BAD_REQUEST, "S602", "이미 시간표가 존재합니다."),
+
+    // 파일 관리
+    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "S501", "파일이 없습니다.");
 
 
     private final HttpStatus status;

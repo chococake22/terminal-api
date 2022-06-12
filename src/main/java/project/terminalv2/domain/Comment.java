@@ -8,6 +8,7 @@ import project.terminalv2.dto.comment.CommentUpdRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "comment")
@@ -30,7 +31,7 @@ public class Comment extends BaseTime {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @NotBlank
+    @NotNull
     @Column(name = "board_no")
     private Long boardNo;
 

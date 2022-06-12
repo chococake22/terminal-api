@@ -1,6 +1,7 @@
 package project.terminalv2.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,7 +15,8 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttachedFile {
+@Builder
+public class AttachedFile extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_no")
@@ -25,11 +27,10 @@ public class AttachedFile {
     private String filename;
 
     @NotBlank
-    @Column(name = "file_save_name")
-    private String fileSaveName;
+    @Column(name = "save_name")
+    private String saveName;
 
     @CreatedDate
-    @NotBlank
     @Column(name = "saved_date", updatable = false)
     private LocalDateTime savedDate;
 
