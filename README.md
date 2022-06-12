@@ -10,7 +10,7 @@
  - MySQL
  - Spring Security
  - JPA(hibernate)
- - Swagger
+ - Swagger 3.0
  - Intellij
 
 
