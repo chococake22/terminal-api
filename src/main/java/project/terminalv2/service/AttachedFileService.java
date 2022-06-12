@@ -83,7 +83,7 @@ public class AttachedFileService {
         return uuid + "." + ext;
     }
 
-    // 확장자 만들기
+    // 확장자만 따로 추출하기
     private String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
         return originalFilename.substring(pos + 1);
