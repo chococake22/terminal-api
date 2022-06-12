@@ -2,6 +2,18 @@
 
 ## 장호원버스터미널 API 
 
+
+### <기술스택>
+
+ - Java 11
+ - Spring Boot 2.7
+ - MySQL
+ - Spring Security
+ - JPA(hibernate)
+ - Swagger
+ - Intellij
+
+
 ### <목적>
 
  - 경기도 이천시 장호원읍은 읍 단위의 작은 시골 동네이다.
