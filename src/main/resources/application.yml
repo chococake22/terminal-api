@@ -20,6 +20,11 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+security:
+  jwt:
+    token:
+      secret-key: ldjksgldfkgljrlkjl2jlk234klmlflfljslkjlwkejrlkj2345ljlkjfglxfjlk
+
 file:
   dir: /Users/ganghyeog/desktop/files/
 

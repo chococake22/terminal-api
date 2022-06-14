@@ -21,6 +21,7 @@ public class NewBusTimeSaveRequest {
     @NotEmpty
     private String busCorp;
 
-    @NotEmpty
+    private String layover;
+
     private String note;
 }

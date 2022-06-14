@@ -13,7 +13,7 @@ public enum ErrorCode { // 에러 종류
     DUPLICATED_USERID(HttpStatus.BAD_REQUEST, "S901", "이미 아이디가 존재합니다."),
     NOT_EQUAL_PWD(HttpStatus.BAD_REQUEST, "S902", "두 비밀번호가 다릅니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "S903", "해당 회원이 없습니다."),
-    NOT_ACCEPTED(HttpStatus.BAD_REQUEST, "S904", "비밀번호가 틀립니다."),
+    WRONG_PWD(HttpStatus.BAD_REQUEST, "S904", "비밀번호가 틀립니다."),
 
     // 게시판 관리
     BOARD_SAVE_SUCCESS(HttpStatus.OK, "S800", "게시글 생성"),

@@ -14,13 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.User;
 import project.terminalv2.dto.user.UserLoginRequest;
 import project.terminalv2.dto.user.UserSaveRequest;
+import project.terminalv2.dto.user.UserUpdRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.UserRepository;
 import project.terminalv2.vo.user.UserInfoVo;
-import springfox.documentation.spring.web.json.Json;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityService securityService;
 
     @Transactional
     public ResponseEntity getUserInfoOne(Long no) {
@@ -110,14 +112,38 @@ public class UserService {
         User user = userRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));  // 없으면 예외처리
 
-        log.info("user={}", user);
-
         // 비밀번호 검증
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.OK).body("로그인 성공");
+
+            log.info("user={}", user);
+
+            String accessToken = securityService.createToken(user.getUserId(), (2*1000*60));
+            String refreshToken = securityService.createRefreshToken(user.getUserId());
+
+
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("accessToken", accessToken);
+            map.put("refreshToken", refreshToken);
+            map.put("userId", user.getUserId());
+
+            return ResponseEntity.status(HttpStatus.OK).body(map);
         } else {
-            throw new ApiException(ErrorCode.NOT_ACCEPTED);
+            throw new ApiException(ErrorCode.WRONG_PWD);
         }
     }
+
+    @Transactional
+    public ResponseEntity updateUserInfo(Long userNo, UserUpdRequest request) {
+
+        // 해당 회원이 존재하는지 확인
+        User user = userRepository.findById(userNo)
+                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));  // 없으면 예외처리
+
+        // 회원정보 수정
+        user.updateInfo(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정");
+    }
+
 
 }

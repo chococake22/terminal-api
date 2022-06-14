@@ -15,5 +15,7 @@ public interface MyTimeRepository extends JpaRepository<MyTime, Long> {
 
     Optional<MyTime> findByUserUserNoAndBusTimeBusTimeNo(Long userNo, Long busTimeNo);
 
+    void deleteAllByBusTime_BusTimeNo(Long busTimeNo);
+
 
 }

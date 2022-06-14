@@ -8,9 +8,10 @@ import lombok.Data;
 public class MyTimeVo {
 
     private String startTarget;
-    private String endTarget;
+    private String arrivedTarget;
     private String startDate;
     private String busCorp;
+    private String layover;
     private String note;
 
 

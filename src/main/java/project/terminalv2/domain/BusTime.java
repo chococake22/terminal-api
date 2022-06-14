@@ -38,7 +38,9 @@ public class BusTime {
     @Column(name = "bus_corp")
     private String busCorp;
 
-    @NotBlank
     @Column(name = "note")
     private String note;
+
+    @Column(name = "layover")
+    private String layover;
 }

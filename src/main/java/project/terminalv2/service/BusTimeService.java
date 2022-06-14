@@ -38,6 +38,7 @@ public class BusTimeService {
                 .arrivedTarget(request.getEndTarget())
                 .startDate(request.getStartDate())
                 .busCorp(request.getBusCorp())
+                .layover(request.getLayover())
                 .note(request.getNote())
                 .build();
 
@@ -78,6 +79,13 @@ public class BusTimeService {
     @Transactional
     public ResponseEntity deleteBusTime(Long busTimeNo) {
 
+        BusTime busTime = busTimeRepository.findById(busTimeNo)
+                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BUSTIME));
+
+        // 먼저 내 시간표에 있는 해당 시간표를 다 삭제한다.
+        myTimeRepository.deleteAllByBusTime_BusTimeNo(busTimeNo);
+
+        // 그 다음에 해당 시간표를 삭제한다.
         busTimeRepository.deleteById(busTimeNo);
 
         return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
@@ -90,19 +98,23 @@ public class BusTimeService {
             page = page - 1;
         }
 
+        // 페이징 생성
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "myTimeNo"));
 
+        // 해당 User 존재 여부 확인
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
 
-
+        // 페이징, 유저 번호를 통해 페이지 형태로 정보 가져오기
         Page<MyTime> myTimePage = myTimeRepository.findAllByUserUserNo(userNo, pageable);
 
+        // vo로 변환
         Page<MyTimeVo> myTimeVos = myTimePage.map(myTime -> MyTimeVo.builder()
                 .startTarget(myTime.getBusTime().getStartTarget())
-                .endTarget(myTime.getBusTime().getArrivedTarget())
+                .arrivedTarget(myTime.getBusTime().getArrivedTarget())
                 .startDate(myTime.getBusTime().getStartDate())
                 .busCorp(myTime.getBusTime().getBusCorp())
+                .layover(myTime.getBusTime().getLayover())
                 .note(myTime.getBusTime().getNote())
                 .build());
 
