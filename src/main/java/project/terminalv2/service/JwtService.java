@@ -2,11 +2,9 @@ package project.terminalv2.service;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import project.terminalv2.domain.User;
-import project.terminalv2.exception.ApiException;
-import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.UserRepository;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -16,7 +14,8 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-public class SecurityService {
+@Slf4j
+public class JwtService {
 
     // 이 서버에서 사용하는 서명을 위한 키
     @Value("${security.jwt.token.secret-key}")
@@ -24,15 +23,15 @@ public class SecurityService {
 
     private final UserRepository userRepository;
 
-    private static final long refreshTokenValidMillisecond = 2*1000*60*30;
+    @Value("${security.jwt.token.access-token-time}")
+    private long accessTokenValidMillisecond;
+
+    @Value("${security.jwt.token.refresh-token-time}")
+    private long refreshTokenValidMillisecond;
 
 
     // 액세스 토큰 생성
-    public String createToken(String subject, long expTime) {
-
-        if (expTime <= 0) {
-            throw new RuntimeException("만료시간이 0보다 커야 한다.");
-        }
+    public String createToken(String subject) {
 
         // 사용할 알고리즘 설정
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -47,7 +46,7 @@ public class SecurityService {
         return Jwts.builder()
                 .setSubject(subject)    // 토큰에 정보를 담는다. -> 유저에 대한 정보를 넣는다.
                 .signWith(signingKey, signatureAlgorithm)   // 새롭게 암호회된 키와 사용한 알고리즘을 설정함
-                .setExpiration(new Date(System.currentTimeMillis() + expTime))  // 만료시간 설정
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenValidMillisecond))  // 만료시간 설정
                 .compact();
     }
 
@@ -62,15 +61,15 @@ public class SecurityService {
         Key signingKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
 
         return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
-                .signWith(signingKey, signatureAlgorithm)
+                .setSubject(subject)    // 유저 정보
+                .setIssuedAt(now)   // 발행시간 현재
+                .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))  // 만료시간
+                .signWith(signingKey, signatureAlgorithm)   // 서명키
                 .compact();
     }
 
     // 토큰 검증
-    // 토큰을 이용해서 subject 정보를 가져오는 메서드
+    // 토큰을 이용해서 한번에 subject 정보를 가져오는 메서드
     // subject 정보는 회원의 아이디나 이름같은 본인이 회원임을 증명하는 정보들이다.
     public String getSubject(String token) {
         Claims claims = Jwts.parserBuilder()
@@ -87,7 +86,7 @@ public class SecurityService {
     // 토큰 유효한지 검증하는 메서드
     public boolean isValidToken(String token) {
 
-        System.out.println("isValidToken is : " + token);
+        log.info("isValidToken is {}", token);
 
         try {
             Claims accessClaims = getClaimsFormToken(token);
@@ -107,6 +106,7 @@ public class SecurityService {
     }
 
 
+    // 토큰으로 정보 가져오기
     private Claims getClaimsFormToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
@@ -114,6 +114,4 @@ public class SecurityService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
-
 }

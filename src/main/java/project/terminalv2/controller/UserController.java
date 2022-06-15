@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import project.terminalv2.dto.user.UserLoginRequest;
 import project.terminalv2.dto.user.UserSaveRequest;
 import project.terminalv2.dto.user.UserUpdRequest;
-import project.terminalv2.service.SecurityService;
-import project.terminalv2.service.UserService;
+import project.terminalv2.service.JwtService;
 
+import project.terminalv2.service.UserService;
+import project.terminalv2.util.JwtProvider;
+
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,7 +22,8 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final SecurityService securityService;
+    private final JwtService jwtService;
+    private final JwtProvider jwtProvider;
 
     @ApiOperation(value = "회원 생성", notes = "회원을 생성합니다.")
     @PostMapping("/api/v1/user")
@@ -34,9 +38,9 @@ public class UserController {
     }
 
     @ApiOperation(value = "회원 개별 조회", notes = "개별 회원을 조회합니다.")
-    @GetMapping("/api/v1/user")
-    public ResponseEntity getUserOne(@RequestParam Long id) {
-        return userService.getUserInfoOne(id);
+    @GetMapping("/api/v1/user/{userNo}")
+    public ResponseEntity getUserOne(@PathVariable Long userNo) {
+        return userService.getUserInfoOne(userNo);
     }
 
     @ApiOperation(value = "로그인", notes = "로그인을 합니다.")
@@ -52,20 +56,25 @@ public class UserController {
     }
 
     @ApiOperation(value = "토큰 실험", notes = "토큰을 테스트 합니다.")
-    @GetMapping("api/v1/token")
+    @GetMapping("/api/v1/token")
     public Map<String, Object> getSubject(@RequestParam(value = "token") String token) {
-        String subject = securityService.getSubject(token);
+        String subject = jwtService.getSubject(token);
         Map<String, Object> map = new LinkedHashMap<>();
 
         // 토큰 유효성 검사
-        securityService.isValidToken(token);
+        jwtService.isValidToken(token);
 
         map.put("result", subject);
         return map;
     }
 
+    @ApiOperation(value = "액세스 토큰 재발급", notes = "액세스 토큰을 재발급합니다.")
+    @GetMapping("/api/v1/access-token")
+    public Map<String, Object> getAccessToken(@RequestParam String token) {
+        String accessToken = jwtProvider.reCreateAccessToken(token);
 
-
-
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("reAccessToken", accessToken);
+        return map;
+    }
 }

@@ -30,7 +30,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final SecurityService securityService;
+    private final JwtService jwtService;
 
     @Transactional
     public ResponseEntity getUserInfoOne(Long no) {
@@ -117,8 +117,8 @@ public class UserService {
 
             log.info("user={}", user);
 
-            String accessToken = securityService.createToken(user.getUserId(), (2*1000*60));
-            String refreshToken = securityService.createRefreshToken(user.getUserId());
+            String accessToken = jwtService.createToken(user.getUserId());
+            String refreshToken = jwtService.createRefreshToken(user.getUserId());
 
 
             Map<String, Object> map = new LinkedHashMap<>();

@@ -24,6 +24,15 @@ security:
   jwt:
     token:
       secret-key: ldjksgldfkgljrlkjl2jlk234klmlflfljslkjlwkejrlkj2345ljlkjfglxfjlk
+#      액세스 토큰 : 2분
+      access-token-time : 120000
+#      리프레시 토큰 : 1시간
+      refresh-token-time : 3600000
+
+springfox:
+  documentation:
+    swagger:
+      use-model-v3: false
 
 file:
   dir: /Users/ganghyeog/desktop/files/
