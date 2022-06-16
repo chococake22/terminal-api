@@ -14,6 +14,7 @@ public enum ErrorCode { // 에러 종류
     NOT_EQUAL_PWD(HttpStatus.BAD_REQUEST, "S902", "두 비밀번호가 다릅니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "S903", "해당 회원이 없습니다."),
     WRONG_PWD(HttpStatus.BAD_REQUEST, "S904", "비밀번호가 틀립니다."),
+    USER_UNAUTHORIZED(HttpStatus.BAD_REQUEST, "S905", "접근 권한이 없습니다."),
 
     // 게시판 관리
     BOARD_SAVE_SUCCESS(HttpStatus.OK, "S800", "게시글 생성"),

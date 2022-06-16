@@ -9,10 +9,9 @@ public class MyTimeVo {
 
     private String startTarget;
     private String arrivedTarget;
-    private String startDate;
+    private String startTime;
     private String busCorp;
     private String layover;
     private String note;
-
 
 }

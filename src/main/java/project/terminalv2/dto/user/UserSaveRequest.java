@@ -4,6 +4,7 @@ package project.terminalv2.dto.user;
 import lombok.*;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -11,24 +12,24 @@ import javax.validation.constraints.Size;
 @Builder
 public class UserSaveRequest {
 
-    @NotEmpty
+    @NotBlank
     @Size(min = 6, max = 15)
     private String userId;
 
-    @NotEmpty
+    @NotBlank
     private String password;
 
-    @NotEmpty
+    @NotBlank
     private String chkPwd;
 
-    @NotEmpty
+    @NotBlank
     private String username;
 
-    @NotEmpty
+    @NotBlank
     @Email
     private String email;
 
-    @NotEmpty
+    @NotBlank
     private String phone;
 
 }

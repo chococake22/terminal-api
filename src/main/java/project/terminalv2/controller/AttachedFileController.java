@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import project.terminalv2.service.AttachedFileService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,9 +24,10 @@ public class AttachedFileController {
 
     private final AttachedFileService attachedFileService;
 
+    // 본인 확인 필요
     @ApiOperation(value = "파일 저장", notes = "첨부 파일을 저장합니다.")
     @PostMapping(value = "/api/v1/board/{boardNo}", consumes = {MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity saveFile(@RequestPart List<MultipartFile> files, @RequestParam Long boardNo) throws IOException {
-        return attachedFileService.saveFiles(files, boardNo);
+    public ResponseEntity saveFile(@RequestPart List<MultipartFile> files, @RequestParam Long boardNo, HttpServletRequest tokenInfo) throws IOException {
+        return attachedFileService.saveFiles(files, boardNo, tokenInfo);
     }
 }

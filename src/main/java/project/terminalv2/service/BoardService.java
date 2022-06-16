@@ -19,19 +19,23 @@ import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.vo.board.BoardDetailVo;
 import project.terminalv2.vo.board.BoardInfoVo;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final JwtService jwtService;
+    private final UserService userService;
 
     @Transactional
-    public ResponseEntity getBoardInfoOne(Long no) {
+    public ResponseEntity getBoardInfoOne(Long boardNo) {
 
         // 게시글 검색
         // 해당 게시글이 없으면 예외처리
-        Board board = boardRepository.findById(no)
+        Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
         log.info("Board = {}", board);
@@ -67,40 +71,51 @@ public class BoardService {
     }
 
     @Transactional
-    public ResponseEntity saveBoard(BoardSaveRequest request) {
+    public ResponseEntity saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo) {
+
+        String token = tokenInfo.getHeader("jwt");
+        String userId = jwtService.getSubject(token);
 
         Board board = Board.builder()
                 .title(request.getTitle())
-                .writer("apple")
+                .writer(userId)
                 .content(request.getContent())
                 .build();
 
         boardRepository.save(board);
 
-        return ResponseEntity.status(HttpStatus.OK).body("글 작성 성공");
+        return ResponseEntity.status(HttpStatus.OK).body("save board success");
     }
 
 
     @Transactional
-    public ResponseEntity updateBoard(Long boardNo, BoardUpdRequest request) {
+    public ResponseEntity updateBoard(Long boardNo, BoardUpdRequest request, HttpServletRequest tokenInfo) {
 
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
-        board.update(request);
-
-        return ResponseEntity.status(HttpStatus.OK).body("글 수정 성공");
+        if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
+            board.update(request);
+            return ResponseEntity.status(HttpStatus.OK).body("update board success");
+        } else {
+            throw new ApiException(ErrorCode.BOARD_UNAUTHORIZED);
+        }
     }
 
 
-    public ResponseEntity deleteBoard(Long boardNo) {
+    public ResponseEntity deleteBoard(Long boardNo, HttpServletRequest tokenInfo) {
 
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
-        boardRepository.deleteById(boardNo);
-
-        return ResponseEntity.status(HttpStatus.OK).body("글 삭제 성공");
+        if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
+            boardRepository.deleteById(boardNo);
+            return ResponseEntity.status(HttpStatus.OK).body("delete board success");
+        } else {
+            throw new ApiException(ErrorCode.BOARD_UNAUTHORIZED);
+        }
 
     }
+
+
 }

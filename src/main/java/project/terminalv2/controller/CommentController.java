@@ -8,16 +8,19 @@ import project.terminalv2.dto.comment.CommentSaveRequest;
 import project.terminalv2.dto.comment.CommentUpdRequest;
 import project.terminalv2.service.CommentService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
+    // 본인 확인 필요
     @ApiOperation(value = "댓글 작성", notes = "댓글을 작성합니다.")
     @PostMapping("/api/v1/{boardNo}/comment")
-    public ResponseEntity saveComment(@PathVariable Long boardNo, @RequestBody CommentSaveRequest request) {
-        return commentService.saveComment(boardNo, request);
+    public ResponseEntity saveComment(@PathVariable Long boardNo, @RequestBody CommentSaveRequest request, HttpServletRequest tokenInfo) {
+        return commentService.saveComment(boardNo, request, tokenInfo);
     }
 
     @ApiOperation(value = "댓글 목록 조회", notes = "댓글 목록을 조회합니다.")
@@ -27,16 +30,17 @@ public class CommentController {
 
     }
 
+    // 본인 확인 필요
     @ApiOperation(value = "댓글 수정", notes = "댓글을 수정합니다.")
     @PutMapping("/api/v1/comment/{commentNo}")
-    public ResponseEntity updateComment(@PathVariable Long commentNo, @RequestBody CommentUpdRequest request) {
-        return commentService.updateComment(commentNo, request);
+    public ResponseEntity updateComment(@PathVariable Long commentNo, @RequestBody CommentUpdRequest request , HttpServletRequest tokenInfo) {
+        return commentService.updateComment(commentNo, request, tokenInfo);
     }
 
+    // 본인 확인 필요
     @ApiOperation(value = "댓글 삭제", notes = "댓글을 삭제합니다.")
     @DeleteMapping("/api/v1/comment/{commentNo}")
-    public ResponseEntity deleteComment(@PathVariable Long commentNo) {
-        return commentService.deleteComment(commentNo);
+    public ResponseEntity deleteComment(@PathVariable Long commentNo, HttpServletRequest tokenInfo) {
+        return commentService.deleteComment(commentNo, tokenInfo);
     }
-
 }

@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import project.terminalv2.domain.AttachedFile;
@@ -16,8 +15,8 @@ import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.AttachedFileRepository;
 import project.terminalv2.respository.BoardRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,7 @@ public class AttachedFileService {
 
     private final AttachedFileRepository attachedFileRepository;
     private final BoardRepository boardRepository;
+    private final UserService userService;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -37,7 +37,7 @@ public class AttachedFileService {
         return fileDir + filename;
     }
 
-    public ResponseEntity saveFiles(List<MultipartFile> files, Long boardNo) throws IOException {
+    public ResponseEntity saveFiles(List<MultipartFile> files, Long boardNo, HttpServletRequest tokenInfo) throws IOException {
 
         if (files.isEmpty()) {
             throw new ApiException(ErrorCode.NOT_FOUND_FILE);
@@ -46,33 +46,36 @@ public class AttachedFileService {
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
-        List<AttachedFile> attachedFiles = new ArrayList<>();
 
-        for (MultipartFile file : files) {
+        if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
+            List<AttachedFile> attachedFiles = new ArrayList<>();
 
-            // 원래 파일명
-            String orginalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+            for (MultipartFile file : files) {
 
-            // 저장 파일명
-            String storeFileName = createStoreFileName(orginalFilename);
+                // 원래 파일명
+                String orginalFilename = StringUtils.cleanPath(file.getOriginalFilename());
 
-            // 경로로 파일 저장
-            file.transferTo(new File(getFullPath(storeFileName)));
+                // 저장 파일명
+                String storeFileName = createStoreFileName(orginalFilename);
 
-            // 파일 첨부 객체 생성
-            AttachedFile attachedFile = AttachedFile.builder()
-                    .filename(orginalFilename)
-                    .saveName(storeFileName)
-                    .board(board)
-                    .build();
+                // 경로로 파일 저장
+                file.transferTo(new File(getFullPath(storeFileName)));
 
-            // 파일 첨부 객체 저장
-            attachedFileRepository.save(attachedFile);
+                // 파일 첨부 객체 생성
+                AttachedFile attachedFile = AttachedFile.builder()
+                        .filename(orginalFilename)
+                        .saveName(storeFileName)
+                        .board(board)
+                        .build();
 
+                // 파일 첨부 객체 저장
+                attachedFileRepository.save(attachedFile);
+
+            }
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.MULTIPART_FORM_DATA).body("성공");
+        } else {
+            throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
-
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.MULTIPART_FORM_DATA).body("성공");
-
     }
 
     // 저장명 만들기

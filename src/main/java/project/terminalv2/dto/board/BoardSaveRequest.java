@@ -10,6 +10,8 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardSaveRequest {
 
     @NotEmpty

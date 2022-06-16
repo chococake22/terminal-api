@@ -16,5 +16,4 @@ public class BoardDetailVo {
     private LocalDateTime updateDate;
     private String writer;
     private String content;
-    private List<Long> fileNos;
 }

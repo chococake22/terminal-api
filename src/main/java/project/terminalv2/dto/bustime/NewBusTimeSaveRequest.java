@@ -3,22 +3,22 @@ package project.terminalv2.dto.bustime;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Builder
 public class NewBusTimeSaveRequest {
 
-    @NotEmpty
+    @NotBlank
     private String startTarget;
 
-    @NotEmpty
+    @NotBlank
     private String endTarget;
 
-    @NotEmpty
-    private String startDate;
+    @NotBlank
+    private String startTime;
 
-    @NotEmpty
+    @NotBlank
     private String busCorp;
 
     private String layover;

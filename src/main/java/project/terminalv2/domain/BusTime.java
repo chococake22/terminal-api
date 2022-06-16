@@ -32,7 +32,7 @@ public class BusTime {
 
     @NotBlank
     @Column(name = "start_date")
-    private String startDate;
+    private String startTime;
 
     @NotBlank
     @Column(name = "bus_corp")

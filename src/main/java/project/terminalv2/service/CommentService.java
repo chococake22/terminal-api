@@ -20,6 +20,8 @@ import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.respository.CommentRepository;
 import project.terminalv2.vo.comment.CommentInfoVo;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -27,21 +29,23 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
+    private final UserService userService;
+    private final JwtService jwtService;
 
     @Transactional
-    public ResponseEntity saveComment(Long boardNo, CommentSaveRequest request) {
+    public ResponseEntity saveComment(Long boardNo, CommentSaveRequest request, HttpServletRequest tokenInfo) {
 
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
+        String token = tokenInfo.getHeader("jwt");
+        String userId = jwtService.getSubject(token);
+
         Comment comment = Comment.builder()
-                .writer("apple")
+                .writer(userId)
                 .content(request.getContent())
                 .boardNo(boardNo)
                 .build();
-
-        log.info("댓글 = {}", comment);
-        log.info("게시글 번호 = {}", boardNo);
 
         commentRepository.save(comment);
 
@@ -70,24 +74,34 @@ public class CommentService {
     }
 
     @Transactional
-    public ResponseEntity updateComment(Long commentNo, CommentUpdRequest request) {
+    public ResponseEntity updateComment(Long commentNo, CommentUpdRequest request, HttpServletRequest tokenInfo) {
 
         Comment comment = commentRepository.findById(commentNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_COMMENT));
 
-        comment.update(request);
+        String userId = userService.getUserIdFromToken(tokenInfo);
 
-        return ResponseEntity.status(HttpStatus.OK).body("댓글 수정 성공");
+        if(userService.hasAccessAuth(userId, tokenInfo)) {
+            comment.update(request);
+            return ResponseEntity.status(HttpStatus.OK).body("댓글 수정 성공");
+        } else {
+            throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
+        }
     }
 
     @Transactional
-    public ResponseEntity deleteComment(Long commentNo) {
+    public ResponseEntity deleteComment(Long commentNo, HttpServletRequest tokenInfo) {
 
         Comment comment = commentRepository.findById(commentNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_COMMENT));
 
-        commentRepository.delete(comment);
+        String userId = userService.getUserIdFromToken(tokenInfo);
 
-        return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제 성공");
+        if(userService.hasAccessAuth(userId, tokenInfo)) {
+            commentRepository.delete(comment);
+            return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제 성공");
+        } else {
+            throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
+        }
     }
 }

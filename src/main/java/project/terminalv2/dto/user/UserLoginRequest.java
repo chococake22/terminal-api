@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -14,11 +15,11 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class UserLoginRequest {
 
-    @NotEmpty
+    @NotBlank
     @Size(min = 6, max = 15)
     private String userId;
 
-    @NotEmpty
+    @NotBlank
     private String password;
 
 }

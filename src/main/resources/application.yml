@@ -20,6 +20,13 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  application:
+    name: terminalv2
+  main:
+#    상호 참조 가능하게 설정
+    allow-circular-references: true
+
+
 security:
   jwt:
     token:

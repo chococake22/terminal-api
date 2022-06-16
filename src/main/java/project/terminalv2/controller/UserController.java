@@ -13,6 +13,7 @@ import project.terminalv2.service.JwtService;
 import project.terminalv2.service.UserService;
 import project.terminalv2.util.JwtProvider;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,16 +44,18 @@ public class UserController {
         return userService.getUserInfoOne(userNo);
     }
 
+
     @ApiOperation(value = "로그인", notes = "로그인을 합니다.")
     @PostMapping("/api/v1/user/login")
     public ResponseEntity login(@RequestBody UserLoginRequest request) throws IllegalAccessException {
         return userService.login(request);
     }
 
+    // 본인 확인 필요
     @ApiOperation(value = "회원정보 수정", notes = "회원 정보를 수정합니다.")
-    @PutMapping("/api/v1/user/{userNo}")
-    public ResponseEntity updateUserInfo(@PathVariable Long userNo, @RequestBody UserUpdRequest request) {
-        return userService.updateUserInfo(userNo, request);
+    @PutMapping("/api/v1/user")
+    public ResponseEntity updateUserInfo(@RequestBody UserUpdRequest request, HttpServletRequest tokenInfo) {
+        return userService.updateUserInfo(request, tokenInfo);
     }
 
     @ApiOperation(value = "토큰 실험", notes = "토큰을 테스트 합니다.")
@@ -63,7 +66,6 @@ public class UserController {
 
         // 토큰 유효성 검사
         jwtService.isValidToken(token);
-
         map.put("result", subject);
         return map;
     }
@@ -72,7 +74,6 @@ public class UserController {
     @GetMapping("/api/v1/access-token")
     public Map<String, Object> getAccessToken(@RequestParam String token) {
         String accessToken = jwtProvider.reCreateAccessToken(token);
-
         Map<String, Object> map = new HashMap<>();
         map.put("reAccessToken", accessToken);
         return map;

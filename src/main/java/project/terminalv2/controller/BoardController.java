@@ -8,6 +8,8 @@ import project.terminalv2.dto.board.BoardSaveRequest;
 import project.terminalv2.dto.board.BoardUpdRequest;
 import project.terminalv2.service.BoardService;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequiredArgsConstructor
 public class BoardController {
@@ -26,26 +28,24 @@ public class BoardController {
         return boardService.getBoardList(page, size);
     }
 
+    // 본인 확인 필요
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성합니다.")
     @PostMapping("/api/v1/board")
-    public ResponseEntity saveBoard(@RequestBody BoardSaveRequest request) {
-        return boardService.saveBoard(request);
+    public ResponseEntity saveBoard(@RequestBody BoardSaveRequest request, HttpServletRequest tokenInfo) {
+        return boardService.saveBoard(request, tokenInfo);
     }
 
+    // 본인 확인 필요
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정합니다.")
     @PutMapping("/api/v1/board/{boardNo}")
-    public ResponseEntity updateBoard(@PathVariable Long boardNo, @RequestBody BoardUpdRequest request) {
-        return boardService.updateBoard(boardNo, request);
+    public ResponseEntity updateBoard(@PathVariable Long boardNo, @RequestBody BoardUpdRequest request, HttpServletRequest tokenInfo) {
+        return boardService.updateBoard(boardNo, request, tokenInfo);
     }
 
+    // 본인 확인 필요
     @ApiOperation(value = "게시글 삭제", notes = " 게시글을 삭제합니다.")
     @DeleteMapping("/api/v1/board/{boardNo}")
-    public ResponseEntity deleteBoard(@PathVariable Long boardNo) {
-        return boardService.deleteBoard(boardNo);
+    public ResponseEntity deleteBoard(@PathVariable Long boardNo, HttpServletRequest tokenInfo) {
+        return boardService.deleteBoard(boardNo, tokenInfo);
     }
-
-
-
-
-
 }

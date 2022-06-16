@@ -19,6 +19,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // 스프링 시큐리티 5.7 이상부터 설정 방식이 바꼈다.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

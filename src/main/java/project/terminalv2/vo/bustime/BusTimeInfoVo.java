@@ -9,7 +9,7 @@ public class BusTimeInfoVo {
 
     private String startTarget;
     private String endTarget;
-    private String startDate;
+    private String startTime;
     private String busCorp;
     private String note;
 

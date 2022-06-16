@@ -20,6 +20,7 @@ import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.UserRepository;
 import project.terminalv2.vo.user.UserInfoVo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -133,17 +134,35 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity updateUserInfo(Long userNo, UserUpdRequest request) {
+    public ResponseEntity updateUserInfo(UserUpdRequest request, HttpServletRequest tokenInfo) {
+
+        String userId = getUserIdFromToken(tokenInfo);
 
         // 해당 회원이 존재하는지 확인
-        User user = userRepository.findById(userNo)
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));  // 없으면 예외처리
 
-        // 회원정보 수정
-        user.updateInfo(request);
+        if(user.getUserId().equals(userId)) {
+            // 회원정보 수정
+            user.updateInfo(request);
 
-        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정");
+            return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정");
+        } else {
+            throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
+        }
     }
 
 
+    public boolean hasAccessAuth(String userId, HttpServletRequest tokenInfo) {
+        String token = tokenInfo.getHeader("jwt");
+        if(!userId.equals(jwtService.getSubject(token))) {
+            return false;
+        }
+        return true;
+    }
+
+    public String getUserIdFromToken(HttpServletRequest request) {
+        String token = request.getHeader("jwt");
+        return jwtService.getSubject(token);
+    }
 }
