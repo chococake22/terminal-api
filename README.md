@@ -62,7 +62,7 @@
 
 #### 회원 관리
 
- - 회원가입 : @POST - /api/v1/user
+ - 회원가입 : POST - /api/v1/user
  - 회원 목록 조회 : GET - /api/v1/user/list
  - 회원 개별 조회 : GET - /api/v1/user/{userNo} => 본인만 조회가 가능해야 하는가?
  - 회원정보 수정 : PUT - /api/v1/user
