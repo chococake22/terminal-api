@@ -51,7 +51,7 @@
  - 회원이 이미 구성한 시간표 항목은 중복으로 구성할 수 없다.
 
 
-### DB 
+### DB 설계
 
 ![TerminalApi](https://user-images.githubusercontent.com/93370148/174256247-db71aa99-83a2-4327-b40d-bb160c3acbb8.png)
 
