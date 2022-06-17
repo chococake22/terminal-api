@@ -3,17 +3,6 @@
 ## 장호원버스터미널 API 
 
 
-### <기술스택>
-
- - Java 11
- - Spring Boot 2.7
- - MySQL
- - Spring Security 5.7
- - JPA(hibernate)
- - Swagger 3.0
- - Intellij
-
-
 ### <목적>
 
  - 경기도 이천시 장호원읍은 읍 단위의 작은 시골 동네이다.
@@ -51,7 +40,18 @@
  - 회원이 이미 구성한 시간표 항목은 중복으로 구성할 수 없다.
 
 
-### DB 설계
+### <기술스택>
+
+ - Java 11
+ - Spring Boot 2.7
+ - MySQL
+ - Spring Security 5.7
+ - JPA(hibernate)
+ - Swagger 3.0
+ - Intellij
+
+
+### <DB 설계>
 
 ![TerminalApi](https://user-images.githubusercontent.com/93370148/174256247-db71aa99-83a2-4327-b40d-bb160c3acbb8.png)
 
