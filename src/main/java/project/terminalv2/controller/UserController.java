@@ -58,7 +58,7 @@ public class UserController {
         return userService.updateUserInfo(request, tokenInfo);
     }
 
-    @ApiOperation(value = "토큰 실험", notes = "토큰을 테스트 합니다.")
+    @ApiOperation(value = "토큰 발급 테스트", notes = "토큰을 테스트 합니다.")
     @GetMapping("/api/v1/token")
     public Map<String, Object> getSubject(@RequestParam(value = "token") String token) {
         String subject = jwtService.getSubject(token);

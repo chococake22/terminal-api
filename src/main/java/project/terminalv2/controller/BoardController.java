@@ -50,7 +50,7 @@ public class BoardController {
         return boardService.deleteBoard(boardNo, tokenInfo);
     }
 
-    @ApiOperation(value = "게시판 검색", notes = "게시물을 검색합니다.")
+    @ApiOperation(value = "게시글 검색", notes = "게시물을 검색합니다.")
     @GetMapping("/api/v1/board/search")
     public ResponseEntity searchBoard(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(defaultValue = "0") Integer type, @RequestParam(required = false) String search) {
         return boardService.searchBoard(page, size, type, search);

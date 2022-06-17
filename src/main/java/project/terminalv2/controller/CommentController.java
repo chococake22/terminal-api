@@ -24,7 +24,7 @@ public class CommentController {
     }
 
     @ApiOperation(value = "댓글 목록 조회", notes = "댓글 목록을 조회합니다.")
-    @GetMapping("/api/v1/{boardNo}/comments")
+    @GetMapping("/api/v1/{boardNo}/comment/list")
     public ResponseEntity getCommentList(@PathVariable Long boardNo, @RequestParam Integer page, @RequestParam Integer size) {
         return commentService.getCommentList(boardNo, page, size);
 

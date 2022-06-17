@@ -39,7 +39,7 @@ public class AttachedFileController {
     // 파일 다운로드
     @ApiOperation(value = "파일 다운로드", notes = "첨부 파일을 다운로드합니다.")
     @GetMapping(value = "/api/v1/board/file/{fileNo}")
-    public ResponseEntity<Resource> downloadAttach(@PathVariable Long fileNo) throws MalformedURLException, UnsupportedEncodingException {
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileNo) throws MalformedURLException, UnsupportedEncodingException {
         return attachedFileService.downloadFile(fileNo);
     }
 }
