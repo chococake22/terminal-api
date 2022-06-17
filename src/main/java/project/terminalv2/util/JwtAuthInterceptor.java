@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
-    private final UserRepository userRepository;
     private final JwtService jwtService;
 
     // 로그인, 회원가입을 제외한 모든 요청은 이 interceptor를 거쳐간다.

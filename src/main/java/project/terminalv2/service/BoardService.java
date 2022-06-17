@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.Board;
+import project.terminalv2.domain.SearchType;
 import project.terminalv2.dto.board.BoardSaveRequest;
 import project.terminalv2.dto.board.BoardUpdRequest;
 import project.terminalv2.exception.ApiException;
@@ -114,8 +115,40 @@ public class BoardService {
         } else {
             throw new ApiException(ErrorCode.BOARD_UNAUTHORIZED);
         }
-
     }
 
 
+    @Transactional
+    public ResponseEntity searchBoard(Integer page, Integer size, Integer type, String search) {
+
+        if (page > 0) {
+            page = page - 1;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardNo"));
+
+        Page<Board> boards;
+
+        // 카테고리별 검색
+        if (SearchType.ofCode(type).equals(SearchType.TITLE)) {
+            boards = boardRepository.findAllByTitleContaining(search, pageable);
+        } else if (SearchType.ofCode(type).equals(SearchType.WRITER)) {
+            boards = boardRepository.findAllByWriterContaining(search, pageable);
+        } else if (SearchType.ofCode(type).equals(SearchType.CONTENT)) {
+            boards = boardRepository.findAllByContentContaining(search, pageable);
+        } else if(SearchType.ofCode(type).equals(SearchType.All) && search == null) {
+            boards = boardRepository.findAll(pageable);
+        } else {
+            boards = boardRepository.findAllBySearch(search, pageable);
+        }
+
+        Page<BoardInfoVo> boardInfoVos = boards.map(board -> BoardInfoVo.builder()
+                .boardNo(board.getBoardNo())
+                .title(board.getTitle())
+                .writer(board.getWriter())
+                .build());
+
+        return ResponseEntity.status(HttpStatus.OK).body(boardInfoVos);
+
+    }
 }

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.terminalv2.domain.SearchType;
 import project.terminalv2.dto.board.BoardSaveRequest;
 import project.terminalv2.dto.board.BoardUpdRequest;
 import project.terminalv2.service.BoardService;
@@ -47,5 +48,11 @@ public class BoardController {
     @DeleteMapping("/api/v1/board/{boardNo}")
     public ResponseEntity deleteBoard(@PathVariable Long boardNo, HttpServletRequest tokenInfo) {
         return boardService.deleteBoard(boardNo, tokenInfo);
+    }
+
+    @ApiOperation(value = "게시판 검색", notes = "게시물을 검색합니다.")
+    @GetMapping("/api/v1/board/search")
+    public ResponseEntity searchBoard(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(defaultValue = "0") Integer type, @RequestParam(required = false) String search) {
+        return boardService.searchBoard(page, size, type, search);
     }
 }

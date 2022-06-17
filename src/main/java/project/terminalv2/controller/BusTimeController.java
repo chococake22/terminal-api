@@ -1,7 +1,6 @@
 package project.terminalv2.controller;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +38,7 @@ public class BusTimeController {
 
     // 본인 확인 필요(권한이 관리자인 경우)
     @ApiOperation(value = "신규 버스 시간표 등록", notes = "새로운 버스 시간표를 추가합니다.")
-    @PostMapping("/api/v1/bustime")
+    @PostMapping("/api/v1/bustime/admin")
     public ResponseEntity regNewBusTime(@RequestBody NewBusTimeSaveRequest request) {
         return busTimeService.regNewBusTime(request);
     }
@@ -50,6 +49,4 @@ public class BusTimeController {
     public ResponseEntity deleteBusTime(@PathVariable Long busTimeNo, HttpServletRequest tokenInfo) {
         return busTimeService.deleteBusTime(busTimeNo, tokenInfo);
     }
-
-
 }
