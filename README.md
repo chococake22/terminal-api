@@ -57,4 +57,53 @@
 
 
 
+### <API 설계>
+
+
+#### 회원 관리
+
+ - 회원가입 : POST - /api/v1/user
+ - 회원 목록 조회 : GET - /api/v1/user/list
+ - 회원 개별 조회 : GET - /api/v1/user/{userNo} => 본인만 조회가 가능해야 하는가?
+ - 회원정보 수정 : PUT - /api/v1/user
+ - 토큰 발급 테스트 : GET - /api/v1/token
+ - 액세스 토큰 재발급 : GET - /api/v1/access-token
+
+
+
+#### 게시판 관리
+
+ - 개별 게시글 상세 조회 : GET - /api/v1/board/{boardNo}
+ - 게시글 목록 조회 : GET - /api/v1/board/list
+ - 게시글 생성 : POST - /api/v1/board
+ - 게시글 수정 : PUT - /api/v1/board/{boardNo}
+ - 게시글 삭제 : DELETE - /api/v1/board/{boardNo}
+ - 게시글 검색 : GET - /api/v1/board/search
+
+
+
+#### 댓글 관리
+
+ - 댓글 작성 : POST - /api/v1/{boardNo}/comment
+ - 댓글 목록 조회 : GET - /api/v1/{boardNo}/comment/list
+ - 댓글 수정 : PUT - /api/v1/comment/{commentNo}
+ - 댓글 삭제 : DELETE - /api/v1/comment/{commentNo}
+
+
+
+#### 버스 시간표 관리
+
+ - 내 시간표 조회 : GET - /api/v1/bustime 
+ - 내 시간표 등록 : POST - /api/v1/bustime/{busTimeNo}
+ - 내 시간표 삭제 : DELETE - /api/v1/bustime/{myTimeNo}
+ - 신규 버스 시간표 등록 : POST - /api/v1/bustime/admin
+ - 버스 시간표 삭제 : DELETE - /api/v1/bustime/admin/{busTimeNo}
+
+
+
+#### 파일 관리
+
+ - 파일 저장 : POST - /api/v1/board/{boardNo}
+ - 파일 다운로드 : GET - /api/v1/board/file/{fileNo}
+
 
