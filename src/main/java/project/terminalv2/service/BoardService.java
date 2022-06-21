@@ -15,6 +15,7 @@ import project.terminalv2.domain.SearchType;
 import project.terminalv2.dto.board.BoardSaveRequest;
 import project.terminalv2.dto.board.BoardUpdRequest;
 import project.terminalv2.exception.ApiException;
+import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.vo.board.BoardDetailVo;
@@ -30,9 +31,36 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final JwtService jwtService;
     private final UserService userService;
+    private final ApiResponse apiResponse;
 
     @Transactional
-    public ResponseEntity getBoardInfoOne(Long boardNo) {
+    public ApiResponse saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo) {
+
+        String token = tokenInfo.getHeader("jwt");
+        String userId = jwtService.getSubject(token);
+
+        Board board = Board.builder()
+                .title(request.getTitle())
+                .writer(userId)
+                .content(request.getContent())
+                .build();
+
+        boardRepository.save(board);
+
+        BoardDetailVo boardDetailVo = BoardDetailVo.builder()
+                .boardNo(board.getBoardNo())
+                .title(board.getTitle())
+                .writer(board.getWriter())
+                .content(board.getContent())
+                .writeDate(board.getCreatedDate())
+                .build();
+
+        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 저장 성공", boardDetailVo);
+    }
+
+
+    @Transactional
+    public ApiResponse getBoardInfoOne(Long boardNo) {
 
         // 게시글 검색
         // 해당 게시글이 없으면 예외처리
@@ -50,11 +78,11 @@ public class BoardService {
                 .content(board.getContent())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(boardDetailVo);
+        return apiResponse.makeResponse(HttpStatus.OK, "2000", "개별 게시판 조회 성공", boardDetailVo);
     }
 
     @Transactional
-    public ResponseEntity getBoardList(Integer page, Integer size) {
+    public ApiResponse getBoardList(Integer page, Integer size) {
 
         if (page > 0) {
             page = page - 1;
@@ -68,50 +96,43 @@ public class BoardService {
                 .writer(board.getWriter())
                 .build());
 
-        return ResponseEntity.status(HttpStatus.OK).body(boardInfoVos);
-    }
-
-    @Transactional
-    public ResponseEntity saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo) {
-
-        String token = tokenInfo.getHeader("jwt");
-        String userId = jwtService.getSubject(token);
-
-        Board board = Board.builder()
-                .title(request.getTitle())
-                .writer(userId)
-                .content(request.getContent())
-                .build();
-
-        boardRepository.save(board);
-
-        return ResponseEntity.status(HttpStatus.OK).body("save board success");
+        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시판 목록 조회 성공", boardInfoVos);
     }
 
 
+
     @Transactional
-    public ResponseEntity updateBoard(Long boardNo, BoardUpdRequest request, HttpServletRequest tokenInfo) {
+    public ApiResponse updateBoard(Long boardNo, BoardUpdRequest request, HttpServletRequest tokenInfo) {
 
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
             board.update(request);
-            return ResponseEntity.status(HttpStatus.OK).body("update board success");
+
+            BoardDetailVo boardDetailVo = BoardDetailVo.builder()
+                    .boardNo(board.getBoardNo())
+                    .title(board.getTitle())
+                    .writer(board.getWriter())
+                    .content(board.getContent())
+                    .writeDate(board.getCreatedDate())
+                    .updateDate(board.getModifiedDate())
+                    .build();
+
+            return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 수정 성공", boardDetailVo);
         } else {
             throw new ApiException(ErrorCode.BOARD_UNAUTHORIZED);
         }
     }
 
-
-    public ResponseEntity deleteBoard(Long boardNo, HttpServletRequest tokenInfo) {
+    public ApiResponse deleteBoard(Long boardNo, HttpServletRequest tokenInfo) {
 
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
             boardRepository.deleteById(boardNo);
-            return ResponseEntity.status(HttpStatus.OK).body("delete board success");
+            return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 삭제 성공", null);
         } else {
             throw new ApiException(ErrorCode.BOARD_UNAUTHORIZED);
         }
@@ -119,7 +140,7 @@ public class BoardService {
 
 
     @Transactional
-    public ResponseEntity searchBoard(Integer page, Integer size, Integer type, String search) {
+    public ApiResponse searchBoard(Integer page, Integer size, Integer type, String search) {
 
         if (page > 0) {
             page = page - 1;
@@ -148,7 +169,7 @@ public class BoardService {
                 .writer(board.getWriter())
                 .build());
 
-        return ResponseEntity.status(HttpStatus.OK).body(boardInfoVos);
+        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardInfoVos);
 
     }
 }

@@ -15,10 +15,12 @@ import project.terminalv2.domain.MyTime;
 import project.terminalv2.domain.User;
 import project.terminalv2.dto.bustime.NewBusTimeSaveRequest;
 import project.terminalv2.exception.ApiException;
+import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BusTimeRepository;
 import project.terminalv2.respository.MyTimeRepository;
 import project.terminalv2.respository.UserRepository;
+import project.terminalv2.vo.bustime.BusTimeInfoVo;
 import project.terminalv2.vo.mytime.MyTimeVo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,10 +34,11 @@ public class BusTimeService {
     private final UserRepository userRepository;
     private final MyTimeRepository myTimeRepository;
     private final UserService userService;
+    private final ApiResponse apiResponse;
 
     // 관리자가 새로운 시간표 생성
     @Transactional
-    public ResponseEntity regNewBusTime(NewBusTimeSaveRequest request) {
+    public ApiResponse regNewBusTime(NewBusTimeSaveRequest request) {
 
         BusTime busTime = BusTime.builder()
                 .startTarget(request.getStartTarget())
@@ -48,12 +51,21 @@ public class BusTimeService {
 
         busTimeRepository.save(busTime);
 
-        return ResponseEntity.status(HttpStatus.OK).body("시간표 등록 성공");
+        BusTimeInfoVo busTimeInfoVo = BusTimeInfoVo.builder()
+                .startTarget(busTime.getStartTarget())
+                .arrivedTarget(busTime.getArrivedTarget())
+                .startTime(busTime.getStartTime())
+                .busCorp(busTime.getBusCorp())
+                .layover(busTime.getLayover())
+                .note(busTime.getNote())
+                .build();
+
+        return apiResponse.makeResponse(HttpStatus.OK, "4000", "새로운 시간표 등록 성공", busTimeInfoVo);
     }
 
     // 회원의 내 시간표 등록
     @Transactional
-    public ResponseEntity saveMyBusTime(Long busTimeNo, HttpServletRequest tokenInfo) {
+    public ApiResponse saveMyBusTime(Long busTimeNo, HttpServletRequest tokenInfo) {
 
         BusTime busTime = busTimeRepository.findById(busTimeNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BUSTIME));
@@ -80,7 +92,16 @@ public class BusTimeService {
 
             myTimeRepository.save(myTime);
 
-            return ResponseEntity.status(HttpStatus.OK).body("내 시간표 저장 성공");
+            MyTimeVo myTimeVo = MyTimeVo.builder()
+                    .startTarget(myTime.getBusTime().getStartTarget())
+                    .arrivedTarget(myTime.getBusTime().getArrivedTarget())
+                    .startTime(myTime.getBusTime().getStartTime())
+                    .busCorp(myTime.getBusTime().getBusCorp())
+                    .layover(myTime.getBusTime().getLayover())
+                    .note(myTime.getBusTime().getNote())
+                    .build();
+
+            return apiResponse.makeResponse(HttpStatus.OK, "4000", "내 시간표로 등록 성공", myTimeVo);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
@@ -90,7 +111,7 @@ public class BusTimeService {
 
     // 관리자만 해당 시간표 삭제
     @Transactional
-    public ResponseEntity deleteBusTime(Long busTimeNo, HttpServletRequest tokenInfo) {
+    public ApiResponse deleteBusTime(Long busTimeNo, HttpServletRequest tokenInfo) {
 
         BusTime busTime = busTimeRepository.findById(busTimeNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BUSTIME));
@@ -106,14 +127,14 @@ public class BusTimeService {
             // 그 다음에 해당 시간표를 삭제한다.
             busTimeRepository.deleteById(busTimeNo);
 
-            return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
+            return apiResponse.makeResponse(HttpStatus.OK, "4000", "내 시간표 삭제 성공", null);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
     }
 
     @Transactional
-    public ResponseEntity getMyBusTimeList(Integer page, Integer size, HttpServletRequest tokenInfo) {
+    public ApiResponse getMyBusTimeList(Integer page, Integer size, HttpServletRequest tokenInfo) {
 
         String userId = userService.getUserIdFromToken(tokenInfo);
 
@@ -142,7 +163,7 @@ public class BusTimeService {
                     .note(myTime.getBusTime().getNote())
                     .build());
 
-            return ResponseEntity.status(HttpStatus.OK).body(myTimeVos);
+            return apiResponse.makeResponse(HttpStatus.OK, "4000", "내 시간표 리스트 조회 성공", myTimeVos);
 
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
@@ -153,7 +174,7 @@ public class BusTimeService {
 
 
     @Transactional
-    public ResponseEntity deleteMyTime(Long myTimeNo, HttpServletRequest tokenInfo) {
+    public ApiResponse deleteMyTime(Long myTimeNo, HttpServletRequest tokenInfo) {
 
         String userId = userService.getUserIdFromToken(tokenInfo);
 
@@ -170,7 +191,7 @@ public class BusTimeService {
 
             myTimeRepository.deleteById(myTimeNo);
 
-            return ResponseEntity.status(HttpStatus.OK).body("mytime delete success");
+            return apiResponse.makeResponse(HttpStatus.OK, "4000", "내 시간표 삭제 성공", null);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }

@@ -16,6 +16,7 @@ import project.terminalv2.dto.user.UserLoginRequest;
 import project.terminalv2.dto.user.UserSaveRequest;
 import project.terminalv2.dto.user.UserUpdRequest;
 import project.terminalv2.exception.ApiException;
+import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.UserRepository;
 import project.terminalv2.vo.user.UserInfoVo;
@@ -32,31 +33,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
-    @Transactional
-    public ResponseEntity getUserInfoOne(Long no) {
-
-        // 회원 검색
-        User user = userRepository.findById(no)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
-
-        log.info("User = {}", user);
-
-        // 해당 no의 회원이 존재하면
-        UserInfoVo userInfoVo = UserInfoVo.builder()
-                .userNo(user.getUserNo())
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(userInfoVo);
-    }
+    private final ApiResponse apiResponse;
 
 
     @Transactional
-    public ResponseEntity saveUser(UserSaveRequest request) {
+    public ApiResponse saveUser(UserSaveRequest request) {
 
         // 비밀번호 동일 여부 체크
         if (!request.getPassword().equals(request.getChkPwd())) {
@@ -78,36 +59,12 @@ public class UserService {
 
         userRepository.save(newUser);
 
-        return ResponseEntity.status(HttpStatus.OK).body("회원가입 성공");
-    }
-
-    @Transactional
-    public ResponseEntity getUserList(Integer page, Integer size) {
-
-        if (page > 0) {
-            page = page - 1;
-        }
-
-        // 어떤 페이지를 얼마나 가져오고 오름차순인지 내림차순인지 설정하는 객체
-        Pageable pageable = (Pageable) PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "userNo"));
-
-        Page<User> users = userRepository.findAll(pageable);
-
-        Page<UserInfoVo> userInfoVos = users.map(user -> UserInfoVo.builder()
-                .userNo(user.getUserNo())
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .build()
-        );
-
-        return ResponseEntity.status(HttpStatus.OK).body(userInfoVos);
+        return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원가입 성공", newUser);
     }
 
 
     @Transactional
-    public ResponseEntity login(UserLoginRequest request) throws IllegalAccessException {
+    public ApiResponse login(UserLoginRequest request) throws IllegalAccessException {
 
         // 해당 회원이 존재하는지 확인
         User user = userRepository.findByUserId(request.getUserId())
@@ -127,14 +84,63 @@ public class UserService {
             map.put("refreshToken", refreshToken);
             map.put("userId", user.getUserId());
 
-            return ResponseEntity.status(HttpStatus.OK).body(map);
+            return apiResponse.makeResponse(HttpStatus.OK, "1000", "로그인 성공", map);
         } else {
             throw new ApiException(ErrorCode.WRONG_PWD);
         }
     }
 
     @Transactional
-    public ResponseEntity updateUserInfo(UserUpdRequest request, HttpServletRequest tokenInfo) {
+    public ApiResponse getUserInfoOne(Long no) {
+
+        // 회원 검색
+        User user = userRepository.findById(no)
+                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
+
+        log.info("User = {}", user);
+
+        // 해당 no의 회원이 존재하면
+        UserInfoVo userInfoVo = UserInfoVo.builder()
+                .userNo(user.getUserNo())
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .build();
+
+        return apiResponse.makeResponse(HttpStatus.OK, "1000", "개별 회원 정보 조회 성공", userInfoVo);
+    }
+
+
+
+
+    @Transactional
+    public ApiResponse getUserList(Integer page, Integer size) {
+
+        if (page > 0) {
+            page = page - 1;
+        }
+
+        // 어떤 페이지를 얼마나 가져오고 오름차순인지 내림차순인지 설정하는 객체
+        Pageable pageable = (Pageable) PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "userNo"));
+
+        Page<User> users = userRepository.findAll(pageable);
+
+        Page<UserInfoVo> userInfoVos = users.map(user -> UserInfoVo.builder()
+                .userNo(user.getUserNo())
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .build()
+        );
+
+        return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원 목록 조회 성공", userInfoVos);
+    }
+
+
+    @Transactional
+    public ApiResponse updateUserInfo(UserUpdRequest request, HttpServletRequest tokenInfo) {
 
         String userId = getUserIdFromToken(tokenInfo);
 
@@ -146,7 +152,15 @@ public class UserService {
             // 회원정보 수정
             user.updateInfo(request);
 
-            return ResponseEntity.status(HttpStatus.OK).body("비밀번호 수정");
+            UserInfoVo userInfoVo = UserInfoVo.builder()
+                    .userNo(user.getUserNo())
+                    .userId(user.getUserId())
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .phone(user.getPhone())
+                    .build();
+
+            return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원 정보 수정 성공", userInfoVo);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }

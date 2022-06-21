@@ -34,13 +34,16 @@ public class BusTime {
     @Column(name = "start_date")
     private String startTime;
 
+    // 버스 회사
     @NotBlank
     @Column(name = "bus_corp")
     private String busCorp;
 
+    // 비고
     @Column(name = "note")
     private String note;
 
+    // 경유지
     @Column(name = "layover")
     private String layover;
 }

@@ -22,10 +22,12 @@ public class AttachedFile extends BaseTime {
     @Column(name = "file_no")
     private Long fileNo;
 
+    // 파일명
     @NotBlank
     @Column(name = "filename")
     private String filename;
 
+    // uuid
     @NotBlank
     @Column(name = "save_name")
     private String saveName;

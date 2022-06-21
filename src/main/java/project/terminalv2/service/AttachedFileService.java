@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -47,6 +48,7 @@ public class AttachedFileService {
         return fileDir + filename;
     }
 
+    @Transactional
     public ResponseEntity saveFiles(List<MultipartFile> files, Long boardNo, HttpServletRequest tokenInfo) throws IOException {
 
         if (files.isEmpty()) {
@@ -83,6 +85,7 @@ public class AttachedFileService {
 
             }
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.MULTIPART_FORM_DATA).body("성공");
+            // 파일의 경우 contentType를 따로 지정해야 하기 때문에 ApiResponse로 리턴하는 것보다 기존의 ResponseEntity를 이용하는 것이 낫다고 판단.
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
@@ -102,6 +105,7 @@ public class AttachedFileService {
         return originalFilename.substring(pos + 1);
     }
 
+    @Transactional
     public ResponseEntity<Resource> downloadFile(Long fileNo) throws MalformedURLException, UnsupportedEncodingException {
 
         AttachedFile file = attachedFileRepository.findById(fileNo)
@@ -124,6 +128,6 @@ public class AttachedFileService {
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .contentType(MediaType.MULTIPART_FORM_DATA) // 타입을 Multipart로 설정
                 .body(resource);
-
+        // 파일의 경우 contentType를 따로 지정해야 하기 때문에 ApiResponse로 리턴하는 것보다 기존의 ResponseEntity를 이용하는 것이 낫다고 판단.
     }
 }

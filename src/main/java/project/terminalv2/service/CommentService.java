@@ -15,6 +15,7 @@ import project.terminalv2.domain.Comment;
 import project.terminalv2.dto.comment.CommentSaveRequest;
 import project.terminalv2.dto.comment.CommentUpdRequest;
 import project.terminalv2.exception.ApiException;
+import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.respository.CommentRepository;
@@ -31,9 +32,10 @@ public class CommentService {
     private final BoardRepository boardRepository;
     private final UserService userService;
     private final JwtService jwtService;
+    private final ApiResponse apiResponse;
 
     @Transactional
-    public ResponseEntity saveComment(Long boardNo, CommentSaveRequest request, HttpServletRequest tokenInfo) {
+    public ApiResponse saveComment(Long boardNo, CommentSaveRequest request, HttpServletRequest tokenInfo) {
 
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
@@ -49,11 +51,17 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        return ResponseEntity.status(HttpStatus.OK).body("댓글 작성 성공");
+        CommentInfoVo commentInfoVo = CommentInfoVo.builder()
+                .commentNo(comment.getCommentNo())
+                .writer(comment.getWriter())
+                .content(comment.getContent())
+                .build();
+
+        return apiResponse.makeResponse(HttpStatus.OK, "3000", "댓글 저장 성공", commentInfoVo);
     }
 
     @Transactional
-    public ResponseEntity getCommentList(Long boardNo, Integer page, Integer size) {
+    public ApiResponse getCommentList(Long boardNo, Integer page, Integer size) {
 
         if (page > 0) {
             page = page - 1;
@@ -70,11 +78,11 @@ public class CommentService {
                 .writeDate(comment.getCreatedDate())
                 .build());
 
-        return ResponseEntity.status(HttpStatus.OK).body(commentInfoVos);
+        return apiResponse.makeResponse(HttpStatus.OK, "3000", "댓글 리스트 조회 성공", commentInfoVos);
     }
 
     @Transactional
-    public ResponseEntity updateComment(Long commentNo, CommentUpdRequest request, HttpServletRequest tokenInfo) {
+    public ApiResponse updateComment(Long commentNo, CommentUpdRequest request, HttpServletRequest tokenInfo) {
 
         Comment comment = commentRepository.findById(commentNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_COMMENT));
@@ -83,14 +91,21 @@ public class CommentService {
 
         if(userService.hasAccessAuth(userId, tokenInfo)) {
             comment.update(request);
-            return ResponseEntity.status(HttpStatus.OK).body("댓글 수정 성공");
+
+            CommentInfoVo commentInfoVo = CommentInfoVo.builder()
+                    .commentNo(comment.getCommentNo())
+                    .writer(comment.getWriter())
+                    .content(comment.getContent())
+                    .build();
+
+            return apiResponse.makeResponse(HttpStatus.OK, "3000", "댓글 수정 성공", commentInfoVo);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
     }
 
     @Transactional
-    public ResponseEntity deleteComment(Long commentNo, HttpServletRequest tokenInfo) {
+    public ApiResponse deleteComment(Long commentNo, HttpServletRequest tokenInfo) {
 
         Comment comment = commentRepository.findById(commentNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_COMMENT));
@@ -99,7 +114,7 @@ public class CommentService {
 
         if(userService.hasAccessAuth(userId, tokenInfo)) {
             commentRepository.delete(comment);
-            return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제 성공");
+            return apiResponse.makeResponse(HttpStatus.OK, "3000", "댓글 삭제 성공", null);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.dto.user.UserUpdRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
@@ -54,6 +55,7 @@ public class User {
     @OneToMany(mappedBy = "myTimeNo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MyTime> myBusTime = new ArrayList<>();
 
+    @Transactional
     public void updateInfo(UserUpdRequest request) {
 
         // 두 개의 확인 비밀번호가 같아야 한다.

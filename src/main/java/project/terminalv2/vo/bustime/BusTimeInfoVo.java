@@ -8,9 +8,10 @@ import lombok.Data;
 public class BusTimeInfoVo {
 
     private String startTarget;
-    private String endTarget;
+    private String arrivedTarget;
     private String startTime;
     private String busCorp;
+    private String layover;
     private String note;
 
 }

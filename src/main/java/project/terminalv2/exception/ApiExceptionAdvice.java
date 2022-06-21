@@ -14,14 +14,14 @@ public class ApiExceptionAdvice {   // 예외 종류에 따라 어떤 식으로 
 
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<ApiExceptionResponse> exceptionHandler(HttpServletRequest request, ApiException e) {
+    public ResponseEntity<ApiResponse> exceptionHandler(HttpServletRequest request, ApiException e) {
         log.error("ApiException={}", e);
 
         return ResponseEntity
                 .status(e.getErrorCode().getStatus())
-                .body(ApiExceptionResponse.builder()
-                        .errorCode(e.getErrorCode().getCode())
-                        .errorMessage(e.getErrorCode().getMessage())
+                .body(ApiResponse.builder()
+                        .code(e.getErrorCode().getCode())
+                        .message(e.getErrorCode().getMessage())
                         .build());
     }
 }

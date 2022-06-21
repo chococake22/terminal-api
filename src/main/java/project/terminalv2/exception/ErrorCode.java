@@ -9,35 +9,30 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode { // 에러 종류
 
     // 회원 관리
-    USER_SAVE_SUCCESS(HttpStatus.OK, "S900", "아이디 생성"),
-    DUPLICATED_USERID(HttpStatus.BAD_REQUEST, "S901", "이미 아이디가 존재합니다."),
-    NOT_EQUAL_PWD(HttpStatus.BAD_REQUEST, "S902", "두 비밀번호가 다릅니다."),
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "S903", "해당 회원이 없습니다."),
-    WRONG_PWD(HttpStatus.BAD_REQUEST, "S904", "비밀번호가 틀립니다."),
-    USER_UNAUTHORIZED(HttpStatus.BAD_REQUEST, "S905", "접근 권한이 없습니다."),
+    DUPLICATED_USERID(HttpStatus.BAD_REQUEST, "1001", "이미 아이디가 존재합니다."),
+    NOT_EQUAL_PWD(HttpStatus.BAD_REQUEST, "1002", "두 비밀번호가 다릅니다."),
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "1003", "해당 회원이 없습니다."),
+    WRONG_PWD(HttpStatus.BAD_REQUEST, "1004", "비밀번호가 틀립니다."),
+    USER_UNAUTHORIZED(HttpStatus.BAD_REQUEST, "1005", "접근 권한이 없습니다."),
 
     // 게시판 관리
-    BOARD_SAVE_SUCCESS(HttpStatus.OK, "S800", "게시글 생성"),
-    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "S801", "게시글이 없습니다."),
-    BOARD_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S802", "권한이 없습니다."),
+    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "2001", "게시글이 없습니다."),
+    BOARD_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "2002", "권한이 없습니다."),
 
-    // 댓글 관리
-    COMMENT_SAVE_SUCCESS(HttpStatus.OK, "S700", "댓글 생성"),
-    NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "S701", "해당 댓글이 없습니다."),
-    COMMENT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "S702", "권한이 없습니다."),
+    // 댓글 관리,
+    NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "3001", "해당 댓글이 없습니다."),
+    COMMENT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "3002", "권한이 없습니다."),
 
     // 버스 시간표 관리
-    BUSTIME_SAVE_SUCCESS(HttpStatus.OK, "S600", "버스 시간표 생성"),
-    NOT_FOUND_BUSTIME(HttpStatus.NOT_FOUND, "S601", "해당 시간표가 없습니다."),
-    DUPLICATED_BUSTIME(HttpStatus.BAD_REQUEST, "S602", "이미 시간표가 존재합니다."),
+    NOT_FOUND_BUSTIME(HttpStatus.NOT_FOUND, "4001", "해당 시간표가 없습니다."),
+    DUPLICATED_BUSTIME(HttpStatus.BAD_REQUEST, "4002", "이미 시간표가 존재합니다."),
 
     // 파일 관리
-    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "S501", "파일이 없습니다."),
+    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "5001", "파일이 없습니다."),
 
     // 토큰 관리
-    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "S401", "사용할 수 없는 토큰입니다.");
-
-
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "6001", "사용할 수 없는 토큰입니다.");
+    
     private final HttpStatus status;
     private final String code;
     private String message;
