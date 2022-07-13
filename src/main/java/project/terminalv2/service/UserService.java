@@ -24,6 +24,7 @@ import project.terminalv2.vo.user.UserInfoVo;
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +35,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final ApiResponse apiResponse;
-
 
     @Transactional
     public ApiResponse saveUser(UserSaveRequest request) {
@@ -49,19 +49,11 @@ public class UserService {
             throw new ApiException(ErrorCode.DUPLICATED_USERID);
         }
 
-        User newUser = User.builder()
-                .userId(request.getUserId())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .phone(request.getPhone())
-                .build();
-
+        User newUser = request.createUser(request);
         userRepository.save(newUser);
 
         return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원가입 성공", newUser);
     }
-
 
     @Transactional
     public ApiResponse login(UserLoginRequest request) throws IllegalAccessException {
@@ -78,7 +70,6 @@ public class UserService {
             String accessToken = jwtService.createToken(user.getUserId());
             String refreshToken = jwtService.createRefreshToken(user.getUserId());
 
-
             Map<String, Object> map = new LinkedHashMap<>();
             map.put("accessToken", accessToken);
             map.put("refreshToken", refreshToken);
@@ -91,49 +82,27 @@ public class UserService {
     }
 
     @Transactional
-    public ApiResponse getUserInfoOne(Long no) {
+    public ApiResponse getUserInfoOne(Long userNo) {
 
         // 회원 검색
-        User user = userRepository.findById(no)
+        User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
 
         log.info("User = {}", user);
 
         // 해당 no의 회원이 존재하면
-        UserInfoVo userInfoVo = UserInfoVo.builder()
-                .userNo(user.getUserNo())
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .build();
+        UserInfoVo userInfoVo = user.toUserInfoVo(user);
 
         return apiResponse.makeResponse(HttpStatus.OK, "1000", "개별 회원 정보 조회 성공", userInfoVo);
     }
 
-
-
-
     @Transactional
     public ApiResponse getUserList(Integer page, Integer size) {
 
-        if (page > 0) {
-            page = page - 1;
-        }
-
         // 어떤 페이지를 얼마나 가져오고 오름차순인지 내림차순인지 설정하는 객체
         Pageable pageable = (Pageable) PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "userNo"));
-
         Page<User> users = userRepository.findAll(pageable);
-
-        Page<UserInfoVo> userInfoVos = users.map(user -> UserInfoVo.builder()
-                .userNo(user.getUserNo())
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .build()
-        );
+        Page<UserInfoVo> userInfoVos = users.map(user -> user.toUserInfoVo(user));
 
         return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원 목록 조회 성공", userInfoVos);
     }
@@ -151,14 +120,7 @@ public class UserService {
         if(user.getUserId().equals(userId)) {
             // 회원정보 수정
             user.updateInfo(request);
-
-            UserInfoVo userInfoVo = UserInfoVo.builder()
-                    .userNo(user.getUserNo())
-                    .userId(user.getUserId())
-                    .username(user.getUsername())
-                    .email(user.getEmail())
-                    .phone(user.getPhone())
-                    .build();
+            UserInfoVo userInfoVo = user.toUserInfoVo(user);
 
             return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원 정보 수정 성공", userInfoVo);
         } else {

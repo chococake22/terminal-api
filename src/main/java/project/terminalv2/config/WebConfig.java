@@ -22,6 +22,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new JwtAuthInterceptor(jwtService))
                 .addPathPatterns("/**")
                 .excludePathPatterns("/api/v1/user/login", "/api/v1/user", "/swagger-resources/**",
-                        "/swagger-ui/**", "/api/v1/access-token", "/v2/api-docs");  // 해당 URL은 interceptor가 통과하지 않는다.
+                        "/swagger-ui/**", "/api/v1/access-token", "/v2/api-docs", "/api/v1/board/list");  // 해당 URL은 interceptor가 통과하지 않는다.
     }
 }

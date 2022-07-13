@@ -20,7 +20,7 @@ public class NewBusTimeSaveRequest {
     private String endTarget;
 
     @NotBlank
-    private String startTime;
+    private String startDate;
 
     @NotBlank
     private String busCorp;

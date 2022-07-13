@@ -17,7 +17,6 @@ public enum SearchType {
     private Integer code;
     private String key;
 
-
     // 요청별 상태 코드 반환
     public static SearchType ofCode(Integer code) {
         return Arrays.stream(values())

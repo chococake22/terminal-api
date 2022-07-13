@@ -1,20 +1,20 @@
 package project.terminalv2.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import project.terminalv2.dto.user.UserSaveRequest;
 import project.terminalv2.dto.user.UserUpdRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
+import project.terminalv2.vo.user.UserInfoVo;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +32,8 @@ public class User {
 
     @NotBlank
     @Column(name = "user_id")
+    @Pattern(regexp = "[a-zA-Z0-9]{6,14}",
+            message = "아이디는 영문, 숫자만 가능하며 6 ~ 15자리까지 가능합니다.")
     private String userId;
 
     @NotBlank
@@ -40,6 +42,8 @@ public class User {
 
     @NotBlank
     @Column(name = "username")
+    @Pattern(regexp = "[a-zA-Z0-9]{4,9}",
+            message = "이름은 영문, 숫자만 가능하며 4 ~ 10자리까지 가능합니다.")
     private String username;
 
     @NotBlank
@@ -68,4 +72,15 @@ public class User {
         }
     }
 
+    // UserInfoVo로 변환하는 메서드
+    public UserInfoVo toUserInfoVo(User user) {
+
+        return UserInfoVo.builder()
+                .userNo(user.getUserNo())
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .build();
+    }
 }

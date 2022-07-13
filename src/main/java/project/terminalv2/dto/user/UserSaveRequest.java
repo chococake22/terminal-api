@@ -2,11 +2,10 @@ package project.terminalv2.dto.user;
 
 
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import project.terminalv2.domain.User;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Builder
@@ -15,7 +14,8 @@ import javax.validation.constraints.Size;
 public class UserSaveRequest {
 
     @NotBlank
-    @Size(min = 6, max = 15)
+    @Pattern(regexp = "[a-zA-Z0-9]{6,14}",
+            message = "아이디는 영문, 숫자만 가능하며 6 ~ 15자리까지 가능합니다.")
     private String userId;
 
     @NotBlank
@@ -25,6 +25,8 @@ public class UserSaveRequest {
     private String chkPwd;
 
     @NotBlank
+    @Pattern(regexp = "[a-zA-Z0-9]{4,9}",
+            message = "이름은 영문, 숫자만 가능하며 4 ~ 10자리까지 가능합니다.")
     private String username;
 
     @NotBlank
@@ -33,5 +35,15 @@ public class UserSaveRequest {
 
     @NotBlank
     private String phone;
+
+    public User createUser(UserSaveRequest request) {
+        return User.builder()
+                .userId(request.getUserId())
+                .password(new BCryptPasswordEncoder().encode(request.getPassword()))
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .phone(request.getPhone())
+                .build();
+    }
 
 }

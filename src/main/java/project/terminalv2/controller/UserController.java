@@ -13,8 +13,7 @@ import project.terminalv2.service.JwtService;
 import project.terminalv2.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -26,7 +25,7 @@ public class UserController {
 
     @ApiOperation(value = "회원 생성", notes = "회원을 생성합니다.")
     @PostMapping("/api/v1/user")
-    public ApiResponse saveUser(@RequestBody UserSaveRequest request) {
+    public ApiResponse saveUser(@RequestBody @Valid UserSaveRequest request) {
         return userService.saveUser(request);
     }
 
@@ -56,24 +55,10 @@ public class UserController {
         return userService.updateUserInfo(request, tokenInfo);
     }
 
-    @ApiOperation(value = "토큰 발급 테스트", notes = "토큰을 테스트 합니다.")
-    @GetMapping("/api/v1/token")
-    public Map<String, Object> getSubject(@RequestParam(value = "token") String token) {
-        String subject = jwtService.getSubject(token);
-        Map<String, Object> map = new LinkedHashMap<>();
-
-        // 토큰 유효성 검사
-        jwtService.isValidToken(token);
-        map.put("result", subject);
-        return map;
-    }
 
     @ApiOperation(value = "액세스 토큰 재발급", notes = "액세스 토큰을 재발급합니다.")
     @GetMapping("/api/v1/access-token")
     public Map<String, Object> getAccessToken(@RequestParam String token) {
-        String accessToken = jwtService.reCreateAccessToken(token);
-        Map<String, Object> map = new HashMap<>();
-        map.put("reAccessToken", accessToken);
-        return map;
+        return jwtService.getAccessToken(token);
     }
 }

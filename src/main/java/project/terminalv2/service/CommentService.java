@@ -50,12 +50,7 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
-
-        CommentInfoVo commentInfoVo = CommentInfoVo.builder()
-                .commentNo(comment.getCommentNo())
-                .writer(comment.getWriter())
-                .content(comment.getContent())
-                .build();
+        CommentInfoVo commentInfoVo = comment.toCommentInfoVo(comment);
 
         return apiResponse.makeResponse(HttpStatus.OK, "3000", "댓글 저장 성공", commentInfoVo);
     }
@@ -68,15 +63,8 @@ public class CommentService {
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "commentNo"));
-
         Page<Comment> comments = commentRepository.findAllByBoardNo(boardNo, pageable);
-
-        Page<CommentInfoVo> commentInfoVos = comments.map(comment -> CommentInfoVo.builder()
-                .commentNo(comment.getCommentNo())
-                .writer(comment.getWriter())
-                .content(comment.getContent())
-                .writeDate(comment.getCreatedDate())
-                .build());
+        Page<CommentInfoVo> commentInfoVos = comments.map(comment -> comment.toCommentInfoVo(comment));
 
         return apiResponse.makeResponse(HttpStatus.OK, "3000", "댓글 리스트 조회 성공", commentInfoVos);
     }
@@ -91,13 +79,7 @@ public class CommentService {
 
         if(userService.hasAccessAuth(userId, tokenInfo)) {
             comment.update(request);
-
-            CommentInfoVo commentInfoVo = CommentInfoVo.builder()
-                    .commentNo(comment.getCommentNo())
-                    .writer(comment.getWriter())
-                    .content(comment.getContent())
-                    .build();
-
+            CommentInfoVo commentInfoVo = comment.toCommentInfoVo(comment);
             return apiResponse.makeResponse(HttpStatus.OK, "3000", "댓글 수정 성공", commentInfoVo);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);

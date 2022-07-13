@@ -22,7 +22,6 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-
     public ApiResponse makeResponse(HttpStatus status, String code, String message, T data) {
         return ApiResponse.builder()
                 .status(status)

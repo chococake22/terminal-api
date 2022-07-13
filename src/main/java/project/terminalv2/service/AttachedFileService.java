@@ -82,7 +82,6 @@ public class AttachedFileService {
 
                 // 파일 첨부 객체 저장
                 attachedFileRepository.save(attachedFile);
-
             }
             return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.MULTIPART_FORM_DATA).body("성공");
             // 파일의 경우 contentType를 따로 지정해야 하기 때문에 ApiResponse로 리턴하는 것보다 기존의 ResponseEntity를 이용하는 것이 낫다고 판단.

@@ -13,6 +13,7 @@ spring:
       hibernate:
         show_sql: false
         format_sql: true
+#    영속성 컨텍스트는 service단까지만
     open-in-view: false
 
       #swagger ??? ant_path_matcher? ??
@@ -31,9 +32,9 @@ security:
   jwt:
     token:
       secret-key: ldjksgldfkgljrlkjl2jlk234klmlflfljslkjlwkejrlkj2345ljlkjfglxfjlk
-#      액세스 토큰 : 2분
-      access-token-time : 120000
-#      리프레시 토큰 : 1시간
+#      액세스 토큰 : 10분(10 * 60 * 1000)
+      access-token-time : 600000
+#      리프레시 토큰 : 1시간(60 * 60 * 1000)
       refresh-token-time : 3600000
 
 springfox:

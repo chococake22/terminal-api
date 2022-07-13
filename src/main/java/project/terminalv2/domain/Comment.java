@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.terminalv2.dto.comment.CommentUpdRequest;
+import project.terminalv2.vo.comment.CommentInfoVo;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -37,5 +38,14 @@ public class Comment extends BaseTime {
 
     public void update(CommentUpdRequest request) {
         this.content = request.getContent();
+    }
+
+    public CommentInfoVo toCommentInfoVo(Comment comment) {
+        return CommentInfoVo.builder()
+                .commentNo(comment.getCommentNo())
+                .writer(comment.getWriter())
+                .content(comment.getContent())
+                .writeDate(comment.getCreatedDate())
+                .build();
     }
 }

@@ -2,6 +2,7 @@ package project.terminalv2.vo.user;
 
 import lombok.Builder;
 import lombok.Data;
+import project.terminalv2.domain.User;
 
 import java.util.List;
 
@@ -14,4 +15,5 @@ public class UserInfoVo {
     private String username;
     private String email;
     private String phone;
+
 }

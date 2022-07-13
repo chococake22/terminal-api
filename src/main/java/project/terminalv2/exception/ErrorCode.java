@@ -14,6 +14,7 @@ public enum ErrorCode { // 에러 종류
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "1003", "해당 회원이 없습니다."),
     WRONG_PWD(HttpStatus.BAD_REQUEST, "1004", "비밀번호가 틀립니다."),
     USER_UNAUTHORIZED(HttpStatus.BAD_REQUEST, "1005", "접근 권한이 없습니다."),
+    WRONG_DATA(HttpStatus.BAD_REQUEST, "1006", "데이터를 잘못 입력했습니다."),
 
     // 게시판 관리
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "2001", "게시글이 없습니다."),

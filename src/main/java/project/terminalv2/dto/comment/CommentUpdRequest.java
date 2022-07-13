@@ -16,5 +16,4 @@ public class CommentUpdRequest {
 
     @NotBlank
     private String content;
-
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import project.terminalv2.domain.User;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
@@ -14,6 +15,8 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -71,7 +74,6 @@ public class JwtService {
                 .compact();
     }
 
-    // 토큰 검증
     // 토큰을 이용해서 한번에 subject 정보를 가져오는 메서드
     // subject 정보는 회원의 아이디나 이름같은 본인이 회원임을 증명하는 정보들이다.
     public String getSubject(String token) {
@@ -86,7 +88,7 @@ public class JwtService {
         return claims.getSubject();
     }
 
-    // 토큰 유효한지 검증하는 메서드
+    // 토큰이 유효한지 검증하는 메서드
     public boolean isValidToken(String token) {
 
         log.info("isValidToken is {}", token);
@@ -139,5 +141,13 @@ public class JwtService {
         } else {
             throw new ApiException(ErrorCode.EXPIRED_TOKEN);
         }
+    }
+
+    // 재발급한 액세스 토큰 전송
+    public Map<String, Object> getAccessToken(@RequestParam String token) {
+        String accessToken = reCreateAccessToken(token);
+        Map<String, Object> map = new HashMap<>();
+        map.put("reAccessToken", accessToken);
+        return map;
     }
 }
