@@ -1,6 +1,7 @@
 package project.terminalv2.domain;
 
 import lombok.*;
+import project.terminalv2.vo.mytime.MyTimeVo;
 
 import javax.persistence.*;
 
@@ -26,4 +27,14 @@ public class MyTime {
     private BusTime busTime;
 
 
+    public MyTimeVo toMyTimeVo(MyTime myTime) {
+        return MyTimeVo.builder()
+                .startTarget(myTime.getBusTime().getStartTarget())
+                .arrivedTarget(myTime.getBusTime().getArrivedTarget())
+                .startDate(myTime.getBusTime().getStartDate())
+                .busCorp(myTime.getBusTime().getBusCorp())
+                .layover(myTime.getBusTime().getLayover())
+                .note(myTime.getBusTime().getNote())
+                .build();
+    }
 }

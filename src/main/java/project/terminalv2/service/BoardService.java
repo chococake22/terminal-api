@@ -84,10 +84,6 @@ public class BoardService {
     @Transactional
     public ApiResponse getBoardList(Integer page, Integer size) {
 
-        if (page > 0) {
-            page = page - 1;
-        }
-
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardNo"));
         Page<Board> boards = boardRepository.findAll(pageable);
         Page<BoardInfoVo> boardInfoVos = boards.map(board -> BoardInfoVo.builder()
@@ -142,10 +138,6 @@ public class BoardService {
     @Transactional
     public ApiResponse searchBoard(Integer page, Integer size, Integer type, String search) {
 
-        if (page > 0) {
-            page = page - 1;
-        }
-
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardNo"));
 
         Page<Board> boards;
@@ -170,6 +162,5 @@ public class BoardService {
                 .build());
 
         return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardInfoVos);
-
     }
 }

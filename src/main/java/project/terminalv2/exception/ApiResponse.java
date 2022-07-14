@@ -1,5 +1,6 @@
 package project.terminalv2.exception;
 
+import jdk.jfr.ContentType;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -9,11 +10,14 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
+@Builder
 public class ApiResponse<T> {
 
     private String code;
     private String message;
     private T data;
+    private HttpStatus status;
+    private ContentType contentType;
 
     @Builder
     public ApiResponse(HttpStatus status, String code, String message, T data) {

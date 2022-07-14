@@ -13,13 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import project.terminalv2.domain.AttachedFile;
 import project.terminalv2.domain.Board;
 import project.terminalv2.exception.ApiException;
+import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.AttachedFileRepository;
 import project.terminalv2.respository.BoardRepository;
+import project.terminalv2.vo.file.FileResponseVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -28,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +53,7 @@ public class AttachedFileService {
     }
 
     @Transactional
-    public ResponseEntity saveFiles(List<MultipartFile> files, Long boardNo, HttpServletRequest tokenInfo) throws IOException {
+    public ApiResponse saveFiles(List<MultipartFile> files, Long boardNo, HttpServletRequest tokenInfo) throws IOException {
 
         if (files.isEmpty()) {
             throw new ApiException(ErrorCode.NOT_FOUND_FILE);
@@ -58,9 +62,11 @@ public class AttachedFileService {
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
-
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
-            List<AttachedFile> attachedFiles = new ArrayList<>();
+
+            List<FileResponseVo> fileResponseVos = new ArrayList<>();
+
+            String downloadURI = "";
 
             for (MultipartFile file : files) {
 
@@ -71,7 +77,7 @@ public class AttachedFileService {
                 String storeFileName = createStoreFileName(orginalFilename);
 
                 // 경로로 파일 저장
-                file.transferTo(new File(getFullPath(storeFileName)));
+                file.transferTo(new File(getFullPath(orginalFilename)));
 
                 // 파일 첨부 객체 생성
                 AttachedFile attachedFile = AttachedFile.builder()
@@ -80,10 +86,30 @@ public class AttachedFileService {
                         .board(board)
                         .build();
 
+                // URI 생성
+                downloadURI = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/api/v1/board/download/")
+                        .path(attachedFile.getFilename())
+                        .toUriString();
+
+                FileResponseVo fileResponseVo = FileResponseVo.builder()
+                        .filename(orginalFilename.toString())
+                        .fileUri(downloadURI.toString())
+                        .build();
+
+                fileResponseVos.add(fileResponseVo);
+
                 // 파일 첨부 객체 저장
                 attachedFileRepository.save(attachedFile);
             }
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.MULTIPART_FORM_DATA).body("성공");
+
+            return ApiResponse.builder()
+                    .status(HttpStatus.OK)
+                    .code("6000")
+                    .message("파일 업로드 성공")
+                    .data(fileResponseVos)
+                    .build();
+
             // 파일의 경우 contentType를 따로 지정해야 하기 때문에 ApiResponse로 리턴하는 것보다 기존의 ResponseEntity를 이용하는 것이 낫다고 판단.
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
@@ -105,22 +131,14 @@ public class AttachedFileService {
     }
 
     @Transactional
-    public ResponseEntity<Resource> downloadFile(Long fileNo) throws MalformedURLException, UnsupportedEncodingException {
+    public ResponseEntity<Resource> downloadFile(String fileName) throws MalformedURLException, UnsupportedEncodingException {
 
-        AttachedFile file = attachedFileRepository.findById(fileNo)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_FILE));
+        UrlResource resource = new UrlResource("file:" + getFullPath(fileName));
 
-        // 파일 이름
-        String saveFileName = URLDecoder.decode(file.getFilename(), "UTF-8") ;
-        log.info("saveFileName = {}", saveFileName);
+        System.out.println(resource);
 
-        // 파일 uuid
-        String uuidFileName = file.getSaveName();
-        log.info("uuidFileName = {}", uuidFileName);
+        String encodedUploadFileName = UriUtils.encode(fileName, StandardCharsets.UTF_8);
 
-        UrlResource resource = new UrlResource("file:" + getFullPath(uuidFileName));
-
-        String encodedUploadFileName = UriUtils.encode(saveFileName, StandardCharsets.UTF_8);
         String contentDisposition = "attachment; filename=\"" + encodedUploadFileName;
 
         return ResponseEntity.ok()

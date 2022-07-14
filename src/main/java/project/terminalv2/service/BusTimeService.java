@@ -40,25 +40,11 @@ public class BusTimeService {
     @Transactional
     public ApiResponse regNewBusTime(NewBusTimeSaveRequest request) {
 
-        BusTime busTime = BusTime.builder()
-                .startTarget(request.getStartTarget())
-                .arrivedTarget(request.getEndTarget())
-                .startDate(request.getStartDate())
-                .busCorp(request.getBusCorp())
-                .layover(request.getLayover())
-                .note(request.getNote())
-                .build();
-
+        BusTime busTime = new BusTime();
+        busTime.makeBusTime(request);
         busTimeRepository.save(busTime);
 
-        BusTimeInfoVo busTimeInfoVo = BusTimeInfoVo.builder()
-                .startTarget(busTime.getStartTarget())
-                .arrivedTarget(busTime.getArrivedTarget())
-                .startTime(busTime.getStartDate())
-                .busCorp(busTime.getBusCorp())
-                .layover(busTime.getLayover())
-                .note(busTime.getNote())
-                .build();
+        BusTimeInfoVo busTimeInfoVo = busTime.toBusTimeInfoVo(busTime);
 
         return apiResponse.makeResponse(HttpStatus.OK, "4000", "새로운 시간표 등록 성공", busTimeInfoVo);
     }
@@ -92,21 +78,12 @@ public class BusTimeService {
 
             myTimeRepository.save(myTime);
 
-            MyTimeVo myTimeVo = MyTimeVo.builder()
-                    .startTarget(myTime.getBusTime().getStartTarget())
-                    .arrivedTarget(myTime.getBusTime().getArrivedTarget())
-                    .startTime(myTime.getBusTime().getStartDate())
-                    .busCorp(myTime.getBusTime().getBusCorp())
-                    .layover(myTime.getBusTime().getLayover())
-                    .note(myTime.getBusTime().getNote())
-                    .build();
+            MyTimeVo myTimeVo = myTime.toMyTimeVo(myTime);
 
             return apiResponse.makeResponse(HttpStatus.OK, "4000", "내 시간표로 등록 성공", myTimeVo);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
-
-
     }
 
     // 관리자만 해당 시간표 삭제
@@ -121,6 +98,7 @@ public class BusTimeService {
 
        // 만약 userId가 admin일 경우에는 삭제하도록 한다.
         if (userId.equals("admin")) {
+
             // 먼저 내 시간표에 있는 해당 시간표를 다 삭제한다.
             myTimeRepository.deleteAllByBusTime_BusTimeNo(busTimeNo);
 
@@ -143,9 +121,6 @@ public class BusTimeService {
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
 
         if (userService.hasAccessAuth(user.getUserId(), tokenInfo)) {
-            if (page > 0) {
-                page = page - 1;
-            }
 
             // 페이징 생성
             Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "myTimeNo"));
@@ -154,22 +129,12 @@ public class BusTimeService {
             Page<MyTime> myTimePage = myTimeRepository.findAllByUserUserNo(user.getUserNo(), pageable);
 
             // vo로 변환
-            Page<MyTimeVo> myTimeVos = myTimePage.map(myTime -> MyTimeVo.builder()
-                    .startTarget(myTime.getBusTime().getStartTarget())
-                    .arrivedTarget(myTime.getBusTime().getArrivedTarget())
-                    .startTime(myTime.getBusTime().getStartDate())
-                    .busCorp(myTime.getBusTime().getBusCorp())
-                    .layover(myTime.getBusTime().getLayover())
-                    .note(myTime.getBusTime().getNote())
-                    .build());
+            Page<MyTimeVo> myTimeVos = myTimePage.map(myTime -> myTime.toMyTimeVo(myTime));
 
             return apiResponse.makeResponse(HttpStatus.OK, "4000", "내 시간표 리스트 조회 성공", myTimeVos);
-
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
-
-
     }
 
 

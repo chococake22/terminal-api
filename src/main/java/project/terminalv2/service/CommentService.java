@@ -58,10 +58,6 @@ public class CommentService {
     @Transactional
     public ApiResponse getCommentList(Long boardNo, Integer page, Integer size) {
 
-        if (page > 0) {
-            page = page - 1;
-        }
-
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "commentNo"));
         Page<Comment> comments = commentRepository.findAllByBoardNo(boardNo, pageable);
         Page<CommentInfoVo> commentInfoVos = comments.map(comment -> comment.toCommentInfoVo(comment));
