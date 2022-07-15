@@ -7,10 +7,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.Board;
+import project.terminalv2.domain.BoardType;
 import project.terminalv2.domain.SearchType;
 import project.terminalv2.dto.board.BoardSaveRequest;
 import project.terminalv2.dto.board.BoardUpdRequest;
@@ -19,7 +19,7 @@ import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.vo.board.BoardDetailVo;
-import project.terminalv2.vo.board.BoardInfoVo;
+import project.terminalv2.vo.board.BoardListVo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,22 +34,26 @@ public class BoardService {
     private final ApiResponse apiResponse;
 
     @Transactional
-    public ApiResponse saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo) {
+    public ApiResponse saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo, BoardType boardType) {
 
         String token = tokenInfo.getHeader("jwt");
         String userId = jwtService.getSubject(token);
 
         Board board = Board.builder()
                 .title(request.getTitle())
+                .boardType(boardType)
                 .writer(userId)
                 .content(request.getContent())
                 .build();
+
+        System.out.println(boardType);
 
         boardRepository.save(board);
 
         BoardDetailVo boardDetailVo = BoardDetailVo.builder()
                 .boardNo(board.getBoardNo())
                 .title(board.getTitle())
+                .boardType(board.getBoardType())
                 .writer(board.getWriter())
                 .content(board.getContent())
                 .writeDate(board.getCreatedDate())
@@ -72,6 +76,7 @@ public class BoardService {
         BoardDetailVo boardDetailVo = BoardDetailVo.builder()
                 .boardNo(board.getBoardNo())
                 .title(board.getTitle())
+                .boardType(board.getBoardType())
                 .writeDate(board.getCreatedDate())
                 .updateDate(board.getModifiedDate())
                 .writer(board.getWriter())
@@ -86,8 +91,9 @@ public class BoardService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardNo"));
         Page<Board> boards = boardRepository.findAll(pageable);
-        Page<BoardInfoVo> boardInfoVos = boards.map(board -> BoardInfoVo.builder()
+        Page<BoardListVo> boardInfoVos = boards.map(board -> BoardListVo.builder()
                 .boardNo(board.getBoardNo())
+                .boardType(board.getBoardType())
                 .title(board.getTitle())
                 .writer(board.getWriter())
                 .build());
@@ -109,6 +115,7 @@ public class BoardService {
             BoardDetailVo boardDetailVo = BoardDetailVo.builder()
                     .boardNo(board.getBoardNo())
                     .title(board.getTitle())
+                    .boardType(board.getBoardType())
                     .writer(board.getWriter())
                     .content(board.getContent())
                     .writeDate(board.getCreatedDate())
@@ -136,7 +143,7 @@ public class BoardService {
 
 
     @Transactional
-    public ApiResponse searchBoard(Integer page, Integer size, Integer type, String search) {
+    public ApiResponse searchBoard(Integer page, Integer size, Integer type, String search, BoardType boardType) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardNo"));
 
@@ -155,7 +162,7 @@ public class BoardService {
             boards = boardRepository.findAllBySearch(search, pageable);
         }
 
-        Page<BoardInfoVo> boardInfoVos = boards.map(board -> BoardInfoVo.builder()
+        Page<BoardListVo> boardInfoVos = boards.map(board -> BoardListVo.builder()
                 .boardNo(board.getBoardNo())
                 .title(board.getTitle())
                 .writer(board.getWriter())

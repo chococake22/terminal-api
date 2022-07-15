@@ -16,8 +16,6 @@ public class ApiResponse<T> {
     private String code;
     private String message;
     private T data;
-    private HttpStatus status;
-    private ContentType contentType;
 
     @Builder
     public ApiResponse(HttpStatus status, String code, String message, T data) {
@@ -28,7 +26,6 @@ public class ApiResponse<T> {
 
     public ApiResponse makeResponse(HttpStatus status, String code, String message, T data) {
         return ApiResponse.builder()
-                .status(status)
                 .code(code)
                 .message(message)
                 .data(data)

@@ -21,6 +21,10 @@ public class Board extends BaseTime {
     @Column(name = "board_no")
     private Long boardNo;
 
+    @Column(name = "board_type")
+    @Enumerated(EnumType.STRING)
+    private BoardType boardType;
+
     @NotBlank
     @Column(name = "title")
     private String title;

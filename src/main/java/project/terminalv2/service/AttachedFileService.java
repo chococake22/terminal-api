@@ -29,9 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -103,12 +101,9 @@ public class AttachedFileService {
                 attachedFileRepository.save(attachedFile);
             }
 
-            return ApiResponse.builder()
-                    .status(HttpStatus.OK)
-                    .code("6000")
-                    .message("파일 업로드 성공")
-                    .data(fileResponseVos)
-                    .build();
+            ApiResponse apiResponse = new ApiResponse();
+
+            return apiResponse.makeResponse(HttpStatus.OK, "6000", "파일 업로드 성공", fileResponseVos);
 
             // 파일의 경우 contentType를 따로 지정해야 하기 때문에 ApiResponse로 리턴하는 것보다 기존의 ResponseEntity를 이용하는 것이 낫다고 판단.
         } else {
@@ -135,9 +130,11 @@ public class AttachedFileService {
 
         UrlResource resource = new UrlResource("file:" + getFullPath(fileName));
 
-        System.out.println(resource);
+        log.info("URL: {}", resource.toString());
 
         String encodedUploadFileName = UriUtils.encode(fileName, StandardCharsets.UTF_8);
+
+        log.info("encodedUploadFileName: {}", encodedUploadFileName);
 
         String contentDisposition = "attachment; filename=\"" + encodedUploadFileName;
 

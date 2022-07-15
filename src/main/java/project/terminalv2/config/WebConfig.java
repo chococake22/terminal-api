@@ -2,6 +2,7 @@ package project.terminalv2.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -21,7 +22,14 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JwtAuthInterceptor(jwtService))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/v1/user/login", "/api/v1/user", "/swagger-resources/**",
+                .excludePathPatterns("/api/v1/user/login", "/api/v1/user/list", "/api/v1/user", "/swagger-resources/**",
                         "/swagger-ui/**", "/api/v1/access-token", "/v2/api-docs", "/api/v1/board/list");  // 해당 URL은 interceptor가 통과하지 않는다.
+    }
+
+    // CORS 설정
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("/*");
     }
 }

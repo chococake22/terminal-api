@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import project.terminalv2.domain.User;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
-import project.terminalv2.respository.UserRepository;
 import project.terminalv2.service.JwtService;
 
 import javax.servlet.http.HttpServletRequest;

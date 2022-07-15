@@ -1,15 +1,17 @@
 package project.terminalv2.domain;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import project.terminalv2.dto.user.UserSaveRequest;
 import project.terminalv2.dto.user.UserUpdRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ErrorCode;
-import project.terminalv2.vo.user.UserInfoVo;
+import project.terminalv2.vo.user.UserDetailVo;
+import project.terminalv2.vo.user.UserListVo;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -72,10 +74,24 @@ public class User {
         }
     }
 
-    // UserInfoVo로 변환하는 메서드
-    public UserInfoVo toUserInfoVo(User user) {
+    // UserListVo로 변환하는 메서드
+    public UserListVo toUserListVo(User user) {
 
-        return UserInfoVo.builder()
+        return UserListVo.builder()
+                .userNo(user.getUserNo())
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .build();
+    }
+
+    // UserDetailVo로 변환하는 메서드
+    // 현재는 사용자 상세정보와 리스트 정보에서 차이가 없으나
+    // 추후에 사용자 상세정보는 더 많은 정보를 가져올 수 있으므로 메서드를 별도로 구현
+    public UserDetailVo toUserDetailVo(User user) {
+
+        return UserDetailVo.builder()
                 .userNo(user.getUserNo())
                 .userId(user.getUserId())
                 .username(user.getUsername())

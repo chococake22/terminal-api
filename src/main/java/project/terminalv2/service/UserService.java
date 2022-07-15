@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +18,12 @@ import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.UserRepository;
-import project.terminalv2.vo.user.UserInfoVo;
+import project.terminalv2.vo.user.UserDetailVo;
+import project.terminalv2.vo.user.UserListVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -91,9 +90,9 @@ public class UserService {
         log.info("User = {}", user);
 
         // 해당 no의 회원이 존재하면
-        UserInfoVo userInfoVo = user.toUserInfoVo(user);
+        UserDetailVo userDetailVo = user.toUserDetailVo(user);
 
-        return apiResponse.makeResponse(HttpStatus.OK, "1000", "개별 회원 정보 조회 성공", userInfoVo);
+        return apiResponse.makeResponse(HttpStatus.OK, "1000", "개별 회원 정보 조회 성공", userDetailVo);
     }
 
     @Transactional
@@ -102,9 +101,9 @@ public class UserService {
         // 어떤 페이지를 얼마나 가져오고 오름차순인지 내림차순인지 설정하는 객체
         Pageable pageable = (Pageable) PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "userNo"));
         Page<User> users = userRepository.findAll(pageable);
-        Page<UserInfoVo> userInfoVos = users.map(user -> user.toUserInfoVo(user));
+        Page<UserListVo> userListVos = users.map(user -> user.toUserListVo(user));
 
-        return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원 목록 조회 성공", userInfoVos);
+        return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원 목록 조회 성공", userListVos);
     }
 
 
@@ -120,15 +119,16 @@ public class UserService {
         if(user.getUserId().equals(userId)) {
             // 회원정보 수정
             user.updateInfo(request);
-            UserInfoVo userInfoVo = user.toUserInfoVo(user);
+            UserDetailVo userDetailVo = user.toUserDetailVo(user);
 
-            return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원 정보 수정 성공", userInfoVo);
+            return apiResponse.makeResponse(HttpStatus.OK, "1000", "회원 정보 수정 성공", userDetailVo);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
     }
 
 
+    // 로그인한 사용자가 접근 권한이 있는지 판단
     public boolean hasAccessAuth(String userId, HttpServletRequest tokenInfo) {
         String token = tokenInfo.getHeader("jwt");
         if(!userId.equals(jwtService.getSubject(token))) {
@@ -137,6 +137,7 @@ public class UserService {
         return true;
     }
 
+    // 토큰으로부터 사용자 정보(아이디) 가져오기
     public String getUserIdFromToken(HttpServletRequest request) {
         String token = request.getHeader("jwt");
         return jwtService.getSubject(token);

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.terminalv2.domain.BoardType;
 import project.terminalv2.domain.SearchType;
 import project.terminalv2.dto.board.BoardSaveRequest;
 import project.terminalv2.dto.board.BoardUpdRequest;
@@ -11,6 +12,7 @@ import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.service.BoardService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,8 +35,8 @@ public class BoardController {
     // 본인 확인 필요
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성합니다.")
     @PostMapping("/api/v1/board")
-    public ApiResponse saveBoard(@RequestBody BoardSaveRequest request, HttpServletRequest tokenInfo) {
-        return boardService.saveBoard(request, tokenInfo);
+    public ApiResponse saveBoard(@RequestBody BoardSaveRequest request, HttpServletRequest tokenInfo, BoardType boardType) {
+        return boardService.saveBoard(request, tokenInfo, boardType);
     }
 
     // 본인 확인 필요
@@ -53,7 +55,7 @@ public class BoardController {
 
     @ApiOperation(value = "게시글 검색", notes = "게시물을 검색합니다.")
     @GetMapping("/api/v1/board/search")
-    public ApiResponse searchBoard(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(defaultValue = "0") Integer type, @RequestParam(required = false) String search) {
-        return boardService.searchBoard(page, size, type, search);
+    public ApiResponse searchBoard(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(defaultValue = "0") Integer type, @RequestParam(required = false) String search, BoardType boardType) {
+        return boardService.searchBoard(page, size, type, search, boardType);
     }
 }

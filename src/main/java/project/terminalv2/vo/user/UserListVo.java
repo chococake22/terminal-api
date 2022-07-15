@@ -2,13 +2,10 @@ package project.terminalv2.vo.user;
 
 import lombok.Builder;
 import lombok.Data;
-import project.terminalv2.domain.User;
-
-import java.util.List;
 
 @Data
 @Builder
-public class UserInfoVo {
+public class UserListVo {
 
     private Long userNo;
     private String userId;
