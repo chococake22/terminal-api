@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import project.terminalv2.domain.Board;
+import project.terminalv2.domain.type.BoardType;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
@@ -22,4 +23,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     // 전체 카테고리 포함
     @Query(value = "SELECT b FROM Board b WHERE b.title like %:keyword% or b.writer like  %:keyword% or  b.content like  %:keyword%")
     Page<Board> findAllBySearch(String keyword, Pageable pageable);
+
+    @Query(value = "SELECT b " +
+            "FROM Board b " +
+            "WHERE b.title like %:search% or b.writer like %:search% or b.content like %:search% " +
+            "or b.boardType = :boardType")
+    Page<Board> findAllByWord(String search, BoardType boardType, Pageable pageable);
 }

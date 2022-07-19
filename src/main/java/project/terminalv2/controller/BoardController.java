@@ -2,23 +2,28 @@ package project.terminalv2.controller;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import project.terminalv2.domain.BoardType;
-import project.terminalv2.domain.SearchType;
+import project.terminalv2.domain.type.BoardType;
+import project.terminalv2.domain.type.SearchType;
 import project.terminalv2.dto.board.BoardSaveRequest;
 import project.terminalv2.dto.board.BoardUpdRequest;
 import project.terminalv2.exception.ApiResponse;
+import project.terminalv2.respository.BoardSearchRepository;
 import project.terminalv2.service.BoardService;
+import project.terminalv2.vo.board.BoardListVo;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardSearchRepository boardSearchRepository;
 
     @ApiOperation(value = "개별 게시글 상세 조회", notes = "개별 게시물을 상세 조회합니다.")
     @GetMapping("/api/v1/board/{boardNo}")
@@ -55,7 +60,20 @@ public class BoardController {
 
     @ApiOperation(value = "게시글 검색", notes = "게시물을 검색합니다.")
     @GetMapping("/api/v1/board/search")
-    public ApiResponse searchBoard(@RequestParam Integer page, @RequestParam Integer size, @RequestParam(defaultValue = "0") Integer type, @RequestParam(required = false) String search, BoardType boardType) {
-        return boardService.searchBoard(page, size, type, search, boardType);
+    public ApiResponse searchBoard(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                   @RequestParam(defaultValue = "0") Integer page,
+                                   @RequestParam(defaultValue = "20") Integer size,
+                                   @RequestParam(required = false) String keyword,
+                                   @RequestParam(required = false) SearchType searchType,
+                                   @RequestParam BoardType boardType) {
+        System.out.println("여기 거치나");
+        return boardService.searchBoard(startDate, endDate, page, size, keyword, searchType, boardType);
+    }
+
+    @ApiOperation(value = "jpql테스트", notes = "jpql")
+    @GetMapping("/test")
+    public List<BoardListVo> findSearchBoard() {
+        return boardSearchRepository.findSearchBoard();
     }
 }

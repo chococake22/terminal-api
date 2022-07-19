@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.terminalv2.domain.type.BoardType;
 
 import javax.validation.constraints.NotEmpty;
 

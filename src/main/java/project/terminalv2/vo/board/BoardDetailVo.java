@@ -2,10 +2,9 @@ package project.terminalv2.vo.board;
 
 import lombok.Builder;
 import lombok.Data;
-import project.terminalv2.domain.BoardType;
+import project.terminalv2.domain.type.BoardType;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder

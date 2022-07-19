@@ -2,6 +2,7 @@ package project.terminalv2.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.jni.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,18 +11,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.Board;
-import project.terminalv2.domain.BoardType;
-import project.terminalv2.domain.SearchType;
+import project.terminalv2.domain.type.BoardType;
+import project.terminalv2.domain.type.SearchType;
 import project.terminalv2.dto.board.BoardSaveRequest;
 import project.terminalv2.dto.board.BoardUpdRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BoardRepository;
+import project.terminalv2.respository.BoardSearchRepository;
 import project.terminalv2.vo.board.BoardDetailVo;
 import project.terminalv2.vo.board.BoardListVo;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +37,7 @@ public class BoardService {
     private final JwtService jwtService;
     private final UserService userService;
     private final ApiResponse apiResponse;
+    private final BoardSearchRepository boardSearchRepository;
 
     @Transactional
     public ApiResponse saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo, BoardType boardType) {
@@ -46,7 +52,7 @@ public class BoardService {
                 .content(request.getContent())
                 .build();
 
-        System.out.println(boardType);
+        log.info("board: {}", board);
 
         boardRepository.save(board);
 
@@ -143,31 +149,38 @@ public class BoardService {
 
 
     @Transactional
-    public ApiResponse searchBoard(Integer page, Integer size, Integer type, String search, BoardType boardType) {
+    public ApiResponse searchBoard(LocalDate startDate, LocalDate endDate, Integer page, Integer size, String keyword, SearchType searchType, BoardType boardType) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardNo"));
 
         Page<Board> boards;
 
         // 카테고리별 검색
-        if (SearchType.ofCode(type).equals(SearchType.TITLE)) {
-            boards = boardRepository.findAllByTitleContaining(search, pageable);
-        } else if (SearchType.ofCode(type).equals(SearchType.WRITER)) {
-            boards = boardRepository.findAllByWriterContaining(search, pageable);
-        } else if (SearchType.ofCode(type).equals(SearchType.CONTENT)) {
-            boards = boardRepository.findAllByContentContaining(search, pageable);
-        } else if(SearchType.ofCode(type).equals(SearchType.All) && search == null) {
-            boards = boardRepository.findAll(pageable);
-        } else {
-            boards = boardRepository.findAllBySearch(search, pageable);
-        }
+//        if (SearchType.ofCode(type).equals(SearchType.TITLE)) {
+//            boards = boardRepository.findAllByTitleContaining(search, pageable);
+//        } else if (SearchType.ofCode(type).equals(SearchType.WRITER)) {
+//            boards = boardRepository.findAllByWriterContaining(search, pageable);
+//        } else if (SearchType.ofCode(type).equals(SearchType.CONTENT)) {
+//            boards = boardRepository.findAllByContentContaining(search, pageable);
+//        } else if(SearchType.ofCode(type).equals(SearchType.All) && search == null) {
+//            boards = boardRepository.findAll(pageable);
+//        } else {
+//            boards = boardRepository.findAllBySearch(search, pageable);
+//        }
 
-        Page<BoardListVo> boardInfoVos = boards.map(board -> BoardListVo.builder()
-                .boardNo(board.getBoardNo())
-                .title(board.getTitle())
-                .writer(board.getWriter())
-                .build());
+        List<Board> boardList = boardSearchRepository.findBySearch(startDate, endDate, page, size, keyword, searchType, boardType);
 
-        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardInfoVos);
+
+
+//        boards = boardRepository.findAllByWord(search, boardType, pageable);
+//
+//        Page<BoardListVo> boardListVos = boards.map(board -> BoardListVo.builder()
+//                .boardNo(board.getBoardNo())
+//                .boardType(board.getBoardType())
+//                .title(board.getTitle())
+//                .writer(board.getWriter())
+//                .build());
+
+        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardList);
     }
 }

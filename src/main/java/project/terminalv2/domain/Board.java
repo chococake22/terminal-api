@@ -1,12 +1,11 @@
 package project.terminalv2.domain;
 
 import lombok.*;
+import project.terminalv2.domain.type.BoardType;
 import project.terminalv2.dto.board.BoardUpdRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "board")
