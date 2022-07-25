@@ -49,6 +49,7 @@
  - JPA(hibernate)
  - Swagger 3.0
  - Intellij
+ - gradle
 
 
 ### <DB 설계>
