@@ -49,11 +49,12 @@
  - JPA(hibernate)
  - Swagger 3.0
  - Intellij
+ - gradle
 
 
 ### <DB 설계>
 
-![TerminalApi](https://user-images.githubusercontent.com/93370148/174256247-db71aa99-83a2-4327-b40d-bb160c3acbb8.png)
+![TerminalApi (1)](https://user-images.githubusercontent.com/93370148/180698227-f5480159-2de2-4cde-9a57-a726141b29ae.png)
 
 
 
@@ -64,7 +65,7 @@
 
  - 회원가입 : POST - /api/v1/user
  - 회원 목록 조회 : GET - /api/v1/user/list
- - 회원 개별 조회 : GET - /api/v1/user/{userNo} => 본인만 조회가 가능해야 하는가?
+ - 회원 개별 조회 : GET - /api/v1/user/{userNo} 
  - 회원정보 수정 : PUT - /api/v1/user
  - 토큰 발급 테스트 : GET - /api/v1/token
  - 액세스 토큰 재발급 : GET - /api/v1/access-token
@@ -105,5 +106,14 @@
 
  - 파일 저장 : POST - /api/v1/board/{boardNo}
  - 파일 다운로드 : GET - /api/v1/board/file/{fileNo}
+
+
+
+### <느낀점>
+
+ - REST API 형식에 맞는 API 개발에 대해서 알 수 있었다.
+ - DB 설계를 어떻게 하느냐에 따라서 다양한 형태의 구조가 나올 수 있음을 확인할 수 있었다.
+ - 간단한 기능이어도 실제 구현 단계에서 다양한 경우의 수를 생각해야함을 느낄 수 있었다.
+
 
 
