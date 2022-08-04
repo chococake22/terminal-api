@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,14 +41,14 @@ public class BoardService {
     private final BoardSearchRepository boardSearchRepository;
 
     @Transactional
-    public ApiResponse saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo, BoardType boardType) {
+    public ApiResponse saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo) {
 
         String token = tokenInfo.getHeader("jwt");
         String userId = jwtService.getSubject(token);
 
         Board board = Board.builder()
                 .title(request.getTitle())
-                .boardType(boardType)
+                .boardType(request.getBoardType())
                 .writer(userId)
                 .content(request.getContent())
                 .build();
@@ -101,6 +102,7 @@ public class BoardService {
                 .boardNo(board.getBoardNo())
                 .boardType(board.getBoardType())
                 .title(board.getTitle())
+                .writeDate(board.getCreatedDate())
                 .writer(board.getWriter())
                 .build());
 
@@ -153,7 +155,7 @@ public class BoardService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardNo"));
 
-        Page<Board> boards;
+//        Page<Board> boards;
 
         // 카테고리별 검색
 //        if (SearchType.ofCode(type).equals(SearchType.TITLE)) {
@@ -168,7 +170,22 @@ public class BoardService {
 //            boards = boardRepository.findAllBySearch(search, pageable);
 //        }
 
+        // QueryDsL로 카테고리별 검색 기능 생성
         List<Board> boardList = boardSearchRepository.findBySearch(startDate, endDate, page, size, keyword, searchType, boardType);
+
+        // 전체 페이징 개수도 반환을 해주어야 하나??
+
+//        Page<BoardListVo> boardInfoVos = boards.map(board -> BoardListVo.builder()
+//                .boardNo(board.getBoardNo())
+//                .boardType(board.getBoardType())
+//                .title(board.getTitle())
+//                .writer(board.getWriter())
+//                .build());
+
+        // Board -> BoardListVo
+        List<BoardListVo> boardListVos = boardList.stream()
+                .map(board -> new BoardListVo(board))
+                .collect(Collectors.toList());
 
 
 
@@ -181,6 +198,6 @@ public class BoardService {
 //                .writer(board.getWriter())
 //                .build());
 
-        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardList);
+        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardListVos);
     }
 }

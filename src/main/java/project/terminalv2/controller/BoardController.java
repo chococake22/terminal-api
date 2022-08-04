@@ -20,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class BoardController {
 
     private final BoardService boardService;
@@ -40,8 +41,8 @@ public class BoardController {
     // 본인 확인 필요
     @ApiOperation(value = "게시글 생성", notes = "게시글을 생성합니다.")
     @PostMapping("/api/v1/board")
-    public ApiResponse saveBoard(@RequestBody BoardSaveRequest request, HttpServletRequest tokenInfo, BoardType boardType) {
-        return boardService.saveBoard(request, tokenInfo, boardType);
+    public ApiResponse saveBoard(@RequestBody BoardSaveRequest request, HttpServletRequest tokenInfo) {
+        return boardService.saveBoard(request, tokenInfo);
     }
 
     // 본인 확인 필요
@@ -71,9 +72,9 @@ public class BoardController {
         return boardService.searchBoard(startDate, endDate, page, size, keyword, searchType, boardType);
     }
 
-    @ApiOperation(value = "jpql테스트", notes = "jpql")
-    @GetMapping("/test")
-    public List<BoardListVo> findSearchBoard() {
-        return boardSearchRepository.findSearchBoard();
-    }
+//    @ApiOperation(value = "jpql테스트", notes = "jpql")
+//    @GetMapping("/test")
+//    public List<BoardListVo> findSearchBoard() {
+//        return boardSearchRepository.findSearchBoard();
+//    }
 }

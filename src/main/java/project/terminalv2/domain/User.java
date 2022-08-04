@@ -87,7 +87,7 @@ public class User {
     }
 
     // UserDetailVo로 변환하는 메서드
-    // 현재는 사용자 상세정보와 리스트 정보에서 차이가 없으나
+    // 현재는 사용자 리스트 정보와 차이가 없으나
     // 추후에 사용자 상세정보는 더 많은 정보를 가져올 수 있으므로 메서드를 별도로 구현
     public UserDetailVo toUserDetailVo(User user) {
 

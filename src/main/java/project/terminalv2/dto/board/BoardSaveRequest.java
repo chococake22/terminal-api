@@ -19,6 +19,9 @@ public class BoardSaveRequest {
     private String title;
 
     @NotEmpty
+    private BoardType boardType;
+
+    @NotEmpty
     private String content;
 
 }

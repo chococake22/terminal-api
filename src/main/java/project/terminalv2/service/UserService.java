@@ -57,6 +57,8 @@ public class UserService {
     @Transactional
     public ApiResponse login(UserLoginRequest request) throws IllegalAccessException {
 
+        log.info("user={}", request.getUserId());
+
         // 해당 회원이 존재하는지 확인
         User user = userRepository.findByUserId(request.getUserId())
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));  // 없으면 예외처리
@@ -73,6 +75,7 @@ public class UserService {
             map.put("accessToken", accessToken);
             map.put("refreshToken", refreshToken);
             map.put("userId", user.getUserId());
+            map.put("userNo", user.getUserNo());
 
             return apiResponse.makeResponse(HttpStatus.OK, "1000", "로그인 성공", map);
         } else {

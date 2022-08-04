@@ -13,7 +13,8 @@ public enum BoardType {
     NOTICE(0, "공지사항"),
     NORMAL(1, "일상"),
     QUESTION(2, "질문"),
-    ANSWER(3, "답변");
+    ANSWER(3, "답변"),
+    All(4, "전체");
 
     private Integer code;
     private String key;
