@@ -68,13 +68,6 @@ public class BoardController {
                                    @RequestParam(required = false) String keyword,
                                    @RequestParam(required = false) SearchType searchType,
                                    @RequestParam BoardType boardType) {
-        System.out.println("여기 거치나");
         return boardService.searchBoard(startDate, endDate, page, size, keyword, searchType, boardType);
     }
-
-//    @ApiOperation(value = "jpql테스트", notes = "jpql")
-//    @GetMapping("/test")
-//    public List<BoardListVo> findSearchBoard() {
-//        return boardSearchRepository.findSearchBoard();
-//    }
 }

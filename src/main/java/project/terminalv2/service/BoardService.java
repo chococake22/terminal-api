@@ -85,7 +85,7 @@ public class BoardService {
                 .title(board.getTitle())
                 .boardType(board.getBoardType())
                 .writeDate(board.getCreatedDate())
-                .updateDate(board.getModifiedDate())
+                .modifiedDate(board.getModifiedDate())
                 .writer(board.getWriter())
                 .content(board.getContent())
                 .build();
@@ -127,7 +127,7 @@ public class BoardService {
                     .writer(board.getWriter())
                     .content(board.getContent())
                     .writeDate(board.getCreatedDate())
-                    .updateDate(board.getModifiedDate())
+                    .modifiedDate(board.getModifiedDate())
                     .build();
 
             return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 수정 성공", boardDetailVo);

@@ -19,7 +19,7 @@ public class BoardDetailVo {
     private LocalDateTime writeDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime updateDate;
+    private LocalDateTime modifiedDate;
     private String writer;
     private String content;
 }
