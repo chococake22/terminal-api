@@ -10,6 +10,7 @@ public class BusTimeInfoVo {
     private String startTarget;
     private String arrivedTarget;
     private String startTime;
+    private String price;
     private String busCorp;
     private String layover;
     private String note;

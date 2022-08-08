@@ -25,6 +25,8 @@ import project.terminalv2.vo.mytime.MyTimeVo;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static project.terminalv2.domain.BusTime.makeBusTime;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -40,8 +42,8 @@ public class BusTimeService {
     @Transactional
     public ApiResponse regNewBusTime(NewBusTimeSaveRequest request) {
 
-        BusTime busTime = new BusTime();
-        busTime.makeBusTime(request);
+        BusTime busTime = makeBusTime(request);
+        System.out.println(busTime.getStartTarget());
         busTimeRepository.save(busTime);
 
         BusTimeInfoVo busTimeInfoVo = busTime.toBusTimeInfoVo(busTime);

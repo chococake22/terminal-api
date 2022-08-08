@@ -33,8 +33,12 @@ public class BusTime {
     private String arrivedTarget;
 
     @NotBlank
-    @Column(name = "start_date")
-    private String startDate;
+    @Column(name = "start_time")
+    private String startTime;
+
+    @NotBlank
+    @Column(name = "price")
+    private String price;
 
     // 버스 회사
     @NotBlank
@@ -49,11 +53,12 @@ public class BusTime {
     @Column(name = "layover")
     private String layover;
 
-    public BusTime makeBusTime(NewBusTimeSaveRequest request) {
+    public static BusTime makeBusTime(NewBusTimeSaveRequest request) {
         return BusTime.builder()
                 .startTarget(request.getStartTarget())
-                .arrivedTarget(request.getEndTarget())
-                .startDate(request.getStartDate())
+                .arrivedTarget(request.getArrivedTarget())
+                .startTime(request.getStartTime())
+                .price(request.getPrice())
                 .busCorp(request.getBusCorp())
                 .layover(request.getLayover())
                 .note(request.getNote())
@@ -64,7 +69,8 @@ public class BusTime {
         return BusTimeInfoVo.builder()
                 .startTarget(busTime.getStartTarget())
                 .arrivedTarget(busTime.getArrivedTarget())
-                .startTime(busTime.getStartDate())
+                .startTime(busTime.getStartTime())
+                .price(busTime.getPrice())
                 .busCorp(busTime.getBusCorp())
                 .layover(busTime.getLayover())
                 .note(busTime.getNote())

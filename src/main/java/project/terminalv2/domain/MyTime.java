@@ -31,7 +31,7 @@ public class MyTime {
         return MyTimeVo.builder()
                 .startTarget(myTime.getBusTime().getStartTarget())
                 .arrivedTarget(myTime.getBusTime().getArrivedTarget())
-                .startDate(myTime.getBusTime().getStartDate())
+                .startDate(myTime.getBusTime().getStartTime())
                 .busCorp(myTime.getBusTime().getBusCorp())
                 .layover(myTime.getBusTime().getLayover())
                 .note(myTime.getBusTime().getNote())

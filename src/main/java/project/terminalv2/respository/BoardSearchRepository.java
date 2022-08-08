@@ -33,8 +33,6 @@ public class BoardSearchRepository {
                 .from(board)
                 .where(boardTypeEq(boardType), searchTypeEq(searchType, search), board.createdDate.between(startDate.atStartOfDay(), LocalDateTime.of(endDate, LocalTime.MAX)))
                 .orderBy(board.boardNo.desc())
-                .offset(page)
-                .limit(size)
                 .fetch();
     }
 

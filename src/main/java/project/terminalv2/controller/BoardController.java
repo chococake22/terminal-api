@@ -64,7 +64,7 @@ public class BoardController {
     public ApiResponse searchBoard(@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                    @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                    @RequestParam(defaultValue = "0") Integer page,
-                                   @RequestParam(defaultValue = "20") Integer size,
+                                   @RequestParam(defaultValue = "10") Integer size,
                                    @RequestParam(required = false) String keyword,
                                    @RequestParam(required = false) SearchType searchType,
                                    @RequestParam BoardType boardType) {

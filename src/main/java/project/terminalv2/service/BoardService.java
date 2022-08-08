@@ -3,10 +3,7 @@ package project.terminalv2.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jni.Local;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -173,9 +170,10 @@ public class BoardService {
         // QueryDsL로 카테고리별 검색 기능 생성
         List<Board> boardList = boardSearchRepository.findBySearch(startDate, endDate, page, size, keyword, searchType, boardType);
 
+        log.info("boardListVos.size() : {}", boardList.size());
         // 전체 페이징 개수도 반환을 해주어야 하나??
 
-//        Page<BoardListVo> boardInfoVos = boards.map(board -> BoardListVo.builder()
+//        Page<BoardListVo> boardInfoVos = boardList.map(board -> BoardListVo.builder()
 //                .boardNo(board.getBoardNo())
 //                .boardType(board.getBoardType())
 //                .title(board.getTitle())
@@ -187,9 +185,15 @@ public class BoardService {
                 .map(board -> new BoardListVo(board))
                 .collect(Collectors.toList());
 
+        int start = (int)pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > boardListVos.size() ? boardListVos.size() : (start + pageable.getPageSize());
 
+        log.info("start : {}", start);
+        log.info("end : {}", end);
+        log.info("boardListVos.size() : {}", boardListVos.size());
 
-//        boards = boardRepository.findAllByWord(search, boardType, pageable);
+        // list => page
+        Page<BoardListVo> boardListVoPage = new PageImpl<>(boardListVos.subList(start, end), pageable, boardListVos.size());
 //
 //        Page<BoardListVo> boardListVos = boards.map(board -> BoardListVo.builder()
 //                .boardNo(board.getBoardNo())
@@ -198,6 +202,6 @@ public class BoardService {
 //                .writer(board.getWriter())
 //                .build());
 
-        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardListVos);
+        return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardListVoPage);
     }
 }

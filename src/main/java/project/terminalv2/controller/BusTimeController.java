@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class BusTimeController {
 
     private final BusTimeService busTimeService;

@@ -4,6 +4,7 @@ package project.terminalv2.dto.user;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import project.terminalv2.domain.User;
+import project.terminalv2.domain.type.RoleType;
 
 import javax.validation.constraints.*;
 
@@ -43,6 +44,7 @@ public class UserSaveRequest {
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .phone(request.getPhone())
+                .role(RoleType.USER)
                 .build();
     }
 

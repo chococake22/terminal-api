@@ -17,16 +17,18 @@ public class NewBusTimeSaveRequest {
     private String startTarget;
 
     @NotBlank
-    private String endTarget;
+    private String arrivedTarget;
 
     @NotBlank
-    private String startDate;
+    private String startTime;
+
+    @NotBlank
+    private String price;
 
     @NotBlank
     private String busCorp;
 
     private String layover;
-
 
     private String note;
 }
