@@ -6,7 +6,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import project.terminalv2.respository.UserRepository;
 import project.terminalv2.service.JwtService;
 import project.terminalv2.util.JwtAuthInterceptor;
 
@@ -18,6 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final JwtService jwtService;
 
     // Interceptor 등록
+    // 프론트 작업 중 일부 편의를 위해서 Interceptor 제외 api 등록
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JwtAuthInterceptor(jwtService))

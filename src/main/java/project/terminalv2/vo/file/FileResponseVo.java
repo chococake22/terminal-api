@@ -9,7 +9,4 @@ public class FileResponseVo {
 
     private String filename;
     private String fileUri;
-
-
-
 }

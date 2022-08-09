@@ -56,7 +56,6 @@ public class UserController {
         return userService.updateUserInfo(request, tokenInfo);
     }
 
-
     @ApiOperation(value = "액세스 토큰 재발급", notes = "액세스 토큰을 재발급합니다.")
     @GetMapping("/api/v1/access-token")
     public Map<String, Object> getAccessToken(@RequestParam String token) {

@@ -8,7 +8,6 @@ import project.terminalv2.domain.Board;
 import project.terminalv2.domain.QBoard;
 import project.terminalv2.domain.type.BoardType;
 import project.terminalv2.domain.type.SearchType;
-import project.terminalv2.vo.board.BoardListVo;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;

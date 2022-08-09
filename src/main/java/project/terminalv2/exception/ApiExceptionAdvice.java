@@ -34,16 +34,16 @@ public class ApiExceptionAdvice {   // 예외 종류에 따라 어떤 식으로 
         // 에러 메시지 출력
         BindingResult bindingResult = e.getBindingResult();
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            builder.append(fieldError.getDefaultMessage() + "\n");
+            sb.append(fieldError.getDefaultMessage() + "\n");
         }
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.builder()
                         .code(ErrorCode.WRONG_DATA.getCode())
-                        .message(builder.toString())
+                        .message(sb.toString())
                         .build());
     }
 }

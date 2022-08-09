@@ -75,7 +75,7 @@ public class JwtService {
     }
 
     // 토큰을 이용해서 한번에 subject 정보를 가져오는 메서드
-    // subject 정보는 회원의 아이디나 이름같은 본인이 회원임을 증명하는 정보들이다.
+    // subject 정보는 회원의 아이디나 이름같은 본인 정보를 통해 접속한 사람이 본인임을 증명하는 정보들이다.
     public String getSubject(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY)) // 토큰 해석에 사용할 Secret key를 설정한다.
@@ -95,17 +95,17 @@ public class JwtService {
 
         try {
             Claims accessClaims = getClaimsFormToken(token);
-            System.out.println("액세스 토큰 만료시간 : " + accessClaims.getExpiration());
-            System.out.println("액세스 토큰에 담기 유저 아이디 : " + accessClaims.get("userId"));
+            log.info("액세스 토큰 만료시간 : {}", accessClaims.getExpiration());
+            log.info("액세스 토큰에 담기 유저 아이디 : {}", accessClaims.get("userId"));
             return true;
         } catch (ExpiredJwtException e) {
-            System.out.println("만료된 토큰이다");
+            log.info("만료된 토큰입니다.");
             return false;
         } catch (JwtException e) {
-            System.out.println("사용할 수 없는 토큰이다.");
+            log.info("사용할 수 없는 토큰입니다.");
             return false;
         } catch (NullPointerException e) {
-            System.out.println("토큰이 null이다.");
+            log.info("토큰이 null입니다.");
             return false;
         }
     }

@@ -55,7 +55,6 @@ public class SwaggerConfig {
                 .termsOfServiceUrl("Terms of Service")
                 .contact(new Contact("Mr. Kang", "www.naver.com", "fightest21@naver.com"))
                 .license("JanghowonTerminal Version 1.0")
-                .licenseUrl("www.naver.com")
                 .build();
     }
 

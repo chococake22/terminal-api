@@ -38,6 +38,7 @@ public class Board extends BaseTime {
 
     public void update(BoardUpdRequest request) {
         this.title = request.getTitle();
+        this.boardType = BoardType.ofCode(request.getBoardTypeCode());
         this.content = request.getContent();
     }
 }

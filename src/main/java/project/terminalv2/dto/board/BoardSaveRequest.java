@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.terminalv2.domain.type.BoardType;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -19,7 +18,7 @@ public class BoardSaveRequest {
     private String title;
 
     @NotEmpty
-    private BoardType boardType;
+    private Integer boardTypeCode;
 
     @NotEmpty
     private String content;

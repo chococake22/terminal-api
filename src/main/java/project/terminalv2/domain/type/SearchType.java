@@ -20,9 +20,8 @@ public enum SearchType {
     // 요청별 상태 코드 반환
     public static SearchType ofCode(Integer code) {
         return Arrays.stream(values())
-                .filter(v -> v.getCode().intValue() == code.intValue())
+                .filter(v -> v.getCode() == code.intValue())
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("상태 코드 : " + code));
     }
-
 }

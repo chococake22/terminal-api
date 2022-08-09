@@ -43,9 +43,11 @@ public class BoardService {
         String token = tokenInfo.getHeader("jwt");
         String userId = jwtService.getSubject(token);
 
+        System.out.println(BoardType.ofCode(request.getBoardTypeCode()));
+
         Board board = Board.builder()
                 .title(request.getTitle())
-                .boardType(request.getBoardType())
+                .boardType(BoardType.ofCode(request.getBoardTypeCode()))
                 .writer(userId)
                 .content(request.getContent())
                 .build();
@@ -146,7 +148,6 @@ public class BoardService {
         }
     }
 
-
     @Transactional
     public ApiResponse searchBoard(LocalDate startDate, LocalDate endDate, Integer page, Integer size, String keyword, SearchType searchType, BoardType boardType) {
 
@@ -169,8 +170,6 @@ public class BoardService {
 
         // QueryDsL로 카테고리별 검색 기능 생성
         List<Board> boardList = boardSearchRepository.findBySearch(startDate, endDate, page, size, keyword, searchType, boardType);
-
-        log.info("boardListVos.size() : {}", boardList.size());
         // 전체 페이징 개수도 반환을 해주어야 하나??
 
 //        Page<BoardListVo> boardInfoVos = boardList.map(board -> BoardListVo.builder()

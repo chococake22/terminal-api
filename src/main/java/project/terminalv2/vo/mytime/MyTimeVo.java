@@ -14,7 +14,4 @@ public class MyTimeVo {
     private String busCorp;
     private String layover;
     private String note;
-
-
-
 }

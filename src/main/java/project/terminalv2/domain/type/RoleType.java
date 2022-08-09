@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum RoleType {
@@ -12,5 +14,4 @@ public enum RoleType {
     ADMIN("ROLE_ADMIN");
 
     private final String value;
-
 }

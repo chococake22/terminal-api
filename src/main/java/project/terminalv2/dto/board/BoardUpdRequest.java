@@ -16,6 +16,8 @@ public class BoardUpdRequest {
     @NotEmpty
     private String title;
 
+    private Integer boardTypeCode;
+
     @NotEmpty
     private String content;
 

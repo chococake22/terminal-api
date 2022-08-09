@@ -20,10 +20,9 @@ public enum BoardType {
     private String key;
 
     // 요청별 상태 코드 반환
-    @JsonCreator
     public static BoardType ofCode(Integer code) {
         return Arrays.stream(values())
-                .filter(v -> v.getCode().intValue() == code.intValue())
+                .filter(v -> v.getCode() == code.intValue())
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("상태 코드 : " + code));
     }

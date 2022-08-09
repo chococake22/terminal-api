@@ -24,7 +24,6 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
-    private final BoardSearchRepository boardSearchRepository;
 
     @ApiOperation(value = "개별 게시글 상세 조회", notes = "개별 게시물을 상세 조회합니다.")
     @GetMapping("/api/v1/board/{boardNo}")

@@ -59,6 +59,7 @@ public class User {
     private String phone;
 
     @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     private RoleType role;
 
     // 시간표를 삭제할 경우 내 시간표에 있는 해당 시간표도 삭제되어야 한다.
@@ -101,6 +102,7 @@ public class User {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .phone(user.getPhone())
+                .role(user.getRole())
                 .build();
     }
 }

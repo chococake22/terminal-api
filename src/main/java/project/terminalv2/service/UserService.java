@@ -57,30 +57,36 @@ public class UserService {
     @Transactional
     public ApiResponse login(UserLoginRequest request) throws IllegalAccessException {
 
-        log.info("user={}", request.getUserId());
+        log.info("입력 userId={}", request.getUserId());
 
         // 해당 회원이 존재하는지 확인
-        User user = userRepository.findByUserId(request.getUserId())
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));  // 없으면 예외처리
+        User user = getUser(request.getUserId());  // 없으면 예외처리
 
         // 비밀번호 검증
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 
-            log.info("user={}", user);
+            log.info("접속 userId={}", request.getUserId());
 
             String accessToken = jwtService.createToken(user.getUserId());
             String refreshToken = jwtService.createRefreshToken(user.getUserId());
 
+            // map -> vo로 묶을 필요가 있는지 점검
             Map<String, Object> map = new LinkedHashMap<>();
             map.put("accessToken", accessToken);
             map.put("refreshToken", refreshToken);
             map.put("userId", user.getUserId());
             map.put("userNo", user.getUserNo());
+            map.put("role", user.getRole());
 
             return apiResponse.makeResponse(HttpStatus.OK, "1000", "로그인 성공", map);
         } else {
             throw new ApiException(ErrorCode.WRONG_PWD);
         }
+    }
+
+    private User getUser(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
     }
 
     @Transactional
@@ -89,8 +95,6 @@ public class UserService {
         // 회원 검색
         User user = userRepository.findById(userNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
-
-        log.info("User = {}", user);
 
         // 해당 no의 회원이 존재하면
         UserDetailVo userDetailVo = user.toUserDetailVo(user);
@@ -116,8 +120,7 @@ public class UserService {
         String userId = getUserIdFromToken(tokenInfo);
 
         // 해당 회원이 존재하는지 확인
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));  // 없으면 예외처리
+        User user = getUser(userId);  // 없으면 예외처리
 
         if(user.getUserId().equals(userId)) {
             // 회원정보 수정
