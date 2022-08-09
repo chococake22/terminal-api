@@ -52,7 +52,7 @@ public class UserController {
     // 본인 확인 필요
     @ApiOperation(value = "회원정보 수정", notes = "회원 정보를 수정합니다.")
     @PutMapping("/api/v1/user")
-    public ApiResponse updateUserInfo(@RequestBody UserUpdRequest request, HttpServletRequest tokenInfo) {
+    public ApiResponse updateUserInfo(@RequestBody @Valid UserUpdRequest request, HttpServletRequest tokenInfo) {
         return userService.updateUserInfo(request, tokenInfo);
     }
 

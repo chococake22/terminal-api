@@ -84,7 +84,7 @@ public class UserService {
         }
     }
 
-    private User getUser(String userId) {
+    public User getUser(String userId) {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
     }

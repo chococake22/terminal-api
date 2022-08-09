@@ -2,7 +2,6 @@ package project.terminalv2.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.jni.Local;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import project.terminalv2.vo.board.BoardListVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,8 +41,6 @@ public class BoardService {
         String token = tokenInfo.getHeader("jwt");
         String userId = jwtService.getSubject(token);
 
-        System.out.println(BoardType.ofCode(request.getBoardTypeCode()));
-
         Board board = Board.builder()
                 .title(request.getTitle())
                 .boardType(BoardType.ofCode(request.getBoardTypeCode()))
@@ -52,18 +48,9 @@ public class BoardService {
                 .content(request.getContent())
                 .build();
 
-        log.info("board: {}", board);
-
         boardRepository.save(board);
 
-        BoardDetailVo boardDetailVo = BoardDetailVo.builder()
-                .boardNo(board.getBoardNo())
-                .title(board.getTitle())
-                .boardType(board.getBoardType())
-                .writer(board.getWriter())
-                .content(board.getContent())
-                .writeDate(board.getCreatedDate())
-                .build();
+        BoardDetailVo boardDetailVo = board.toBoardDetailVo(board);
 
         return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 저장 성공", boardDetailVo);
     }
@@ -77,17 +64,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
-        log.info("Board = {}", board);
-
-        BoardDetailVo boardDetailVo = BoardDetailVo.builder()
-                .boardNo(board.getBoardNo())
-                .title(board.getTitle())
-                .boardType(board.getBoardType())
-                .writeDate(board.getCreatedDate())
-                .modifiedDate(board.getModifiedDate())
-                .writer(board.getWriter())
-                .content(board.getContent())
-                .build();
+        BoardDetailVo boardDetailVo = board.toBoardDetailVo(board);
 
         return apiResponse.makeResponse(HttpStatus.OK, "2000", "개별 게시판 조회 성공", boardDetailVo);
     }
@@ -101,14 +78,12 @@ public class BoardService {
                 .boardNo(board.getBoardNo())
                 .boardType(board.getBoardType())
                 .title(board.getTitle())
-                .writeDate(board.getCreatedDate())
+                .createdDate(board.getCreatedDate())
                 .writer(board.getWriter())
                 .build());
 
         return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시판 목록 조회 성공", boardInfoVos);
     }
-
-
 
     @Transactional
     public ApiResponse updateBoard(Long boardNo, BoardUpdRequest request, HttpServletRequest tokenInfo) {
@@ -119,15 +94,7 @@ public class BoardService {
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
             board.update(request);
 
-            BoardDetailVo boardDetailVo = BoardDetailVo.builder()
-                    .boardNo(board.getBoardNo())
-                    .title(board.getTitle())
-                    .boardType(board.getBoardType())
-                    .writer(board.getWriter())
-                    .content(board.getContent())
-                    .writeDate(board.getCreatedDate())
-                    .modifiedDate(board.getModifiedDate())
-                    .build();
+            BoardDetailVo boardDetailVo = board.toBoardDetailVo(board);
 
             return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 수정 성공", boardDetailVo);
         } else {
@@ -135,6 +102,7 @@ public class BoardService {
         }
     }
 
+    @Transactional
     public ApiResponse deleteBoard(Long boardNo, HttpServletRequest tokenInfo) {
 
         Board board = boardRepository.findById(boardNo)
@@ -170,7 +138,6 @@ public class BoardService {
 
         // QueryDsL로 카테고리별 검색 기능 생성
         List<Board> boardList = boardSearchRepository.findBySearch(startDate, endDate, page, size, keyword, searchType, boardType);
-        // 전체 페이징 개수도 반환을 해주어야 하나??
 
 //        Page<BoardListVo> boardInfoVos = boardList.map(board -> BoardListVo.builder()
 //                .boardNo(board.getBoardNo())
@@ -186,10 +153,6 @@ public class BoardService {
 
         int start = (int)pageable.getOffset();
         int end = (start + pageable.getPageSize()) > boardListVos.size() ? boardListVos.size() : (start + pageable.getPageSize());
-
-        log.info("start : {}", start);
-        log.info("end : {}", end);
-        log.info("boardListVos.size() : {}", boardListVos.size());
 
         // list => page
         Page<BoardListVo> boardListVoPage = new PageImpl<>(boardListVos.subList(start, end), pageable, boardListVos.size());

@@ -3,6 +3,7 @@ package project.terminalv2.domain;
 import lombok.*;
 import project.terminalv2.domain.type.BoardType;
 import project.terminalv2.dto.board.BoardUpdRequest;
+import project.terminalv2.vo.board.BoardDetailVo;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -40,5 +41,16 @@ public class Board extends BaseTime {
         this.title = request.getTitle();
         this.boardType = BoardType.ofCode(request.getBoardTypeCode());
         this.content = request.getContent();
+    }
+
+    public BoardDetailVo toBoardDetailVo(Board board) {
+        return BoardDetailVo.builder()
+                .boardNo(board.getBoardNo())
+                .title(board.getTitle())
+                .boardType(board.getBoardType())
+                .writer(board.getWriter())
+                .content(board.getContent())
+                .createdDate(board.getCreatedDate())
+                .build();
     }
 }

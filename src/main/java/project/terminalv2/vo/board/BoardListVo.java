@@ -23,7 +23,7 @@ public class BoardListVo {
     private BoardType boardType;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime writeDate;
+    private LocalDateTime createdDate;
     private String writer;
 
     public BoardListVo(Long boardNo, String title, BoardType boardType, String writer) {
@@ -37,7 +37,7 @@ public class BoardListVo {
         boardNo = board.getBoardNo();
         title = board.getTitle();
         boardType = board.getBoardType();
-        writeDate = board.getCreatedDate();
+        createdDate = board.getCreatedDate();
         writer = board.getWriter();
     }
 }

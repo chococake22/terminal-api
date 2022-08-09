@@ -7,19 +7,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.BusTime;
 import project.terminalv2.domain.MyTime;
 import project.terminalv2.domain.User;
+import project.terminalv2.domain.type.RoleType;
 import project.terminalv2.dto.bustime.NewBusTimeSaveRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BusTimeRepository;
 import project.terminalv2.respository.MyTimeRepository;
-import project.terminalv2.respository.UserRepository;
 import project.terminalv2.vo.bustime.BusTimeInfoVo;
 import project.terminalv2.vo.mytime.MyTimeVo;
 
@@ -33,7 +32,6 @@ import static project.terminalv2.domain.BusTime.makeBusTime;
 public class BusTimeService {
 
     private final BusTimeRepository busTimeRepository;
-    private final UserRepository userRepository;
     private final MyTimeRepository myTimeRepository;
     private final UserService userService;
     private final ApiResponse apiResponse;
@@ -43,9 +41,7 @@ public class BusTimeService {
     public ApiResponse regNewBusTime(NewBusTimeSaveRequest request) {
 
         BusTime busTime = makeBusTime(request);
-        System.out.println(busTime.getStartTarget());
         busTimeRepository.save(busTime);
-
         BusTimeInfoVo busTimeInfoVo = busTime.toBusTimeInfoVo(busTime);
 
         return apiResponse.makeResponse(HttpStatus.OK, "4000", "새로운 시간표 등록 성공", busTimeInfoVo);
@@ -58,12 +54,8 @@ public class BusTimeService {
         BusTime busTime = busTimeRepository.findById(busTimeNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BUSTIME));
 
-        log.info("busTime = {}", busTime);
-
         String userId = userService.getUserIdFromToken(tokenInfo);
-
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
+        User user = userService.getUser(userId);
 
         if (userService.hasAccessAuth(userId, tokenInfo)) {
 
@@ -95,11 +87,11 @@ public class BusTimeService {
         BusTime busTime = busTimeRepository.findById(busTimeNo)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BUSTIME));
 
-
         String userId = userService.getUserIdFromToken(tokenInfo);
+        User user = userService.getUser(userId);
 
-       // 만약 userId가 admin일 경우에는 삭제하도록 한다.
-        if (userId.equals("admin")) {
+       // 만약 user의 권한이 ADMIN일 경우 삭제가 가능하도록 한다.
+        if (user.getRole().equals(RoleType.ADMIN)) {
 
             // 먼저 내 시간표에 있는 해당 시간표를 다 삭제한다.
             myTimeRepository.deleteAllByBusTime_BusTimeNo(busTimeNo);
@@ -107,7 +99,7 @@ public class BusTimeService {
             // 그 다음에 해당 시간표를 삭제한다.
             busTimeRepository.deleteById(busTimeNo);
 
-            return apiResponse.makeResponse(HttpStatus.OK, "4000", "내 시간표 삭제 성공", null);
+            return apiResponse.makeResponse(HttpStatus.OK, "4000", "버스 시간표 삭제 성공", null);
         } else {
             throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
         }
@@ -119,8 +111,7 @@ public class BusTimeService {
         String userId = userService.getUserIdFromToken(tokenInfo);
 
         // 해당 User 존재 여부 확인
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
+        User user = userService.getUser(userId);
 
         if (userService.hasAccessAuth(user.getUserId(), tokenInfo)) {
 
@@ -146,8 +137,7 @@ public class BusTimeService {
         String userId = userService.getUserIdFromToken(tokenInfo);
 
         // 해당 User 존재 여부 확인
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
+        User user = userService.getUser(userId);
 
         // 해당 myTime 존재 여부 확인
         MyTime myTime = myTimeRepository.findById(myTimeNo)
