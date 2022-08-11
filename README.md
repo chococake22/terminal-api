@@ -104,8 +104,9 @@
 
 #### 파일 관리
 
- - 파일 저장 : POST - /api/v1/board/{boardNo}
- - 파일 다운로드 : GET - /api/v1/board/file/{fileNo}
+ - 파일 저장 : POST - /api/v1/board/file/{boardNo}
+ - 파일 다운로드 : GET - /api/v1/board/file/{fileName}
+ - 파일 삭제 : DELETE - /api/v1/board/file/{boardNo}/{fileName}
 
 
 
