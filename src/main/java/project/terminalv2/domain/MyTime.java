@@ -6,8 +6,8 @@ import project.terminalv2.vo.mytime.MyTimeVo;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "my_time")
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

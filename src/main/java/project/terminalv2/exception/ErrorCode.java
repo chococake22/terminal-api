@@ -29,7 +29,8 @@ public enum ErrorCode { // 에러 종류
     DUPLICATED_BUSTIME(HttpStatus.BAD_REQUEST, "4002", "이미 시간표가 존재합니다."),
 
     // 파일 관리
-    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "5001", "파일이 없습니다."),
+    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "5001", "첨부 파일이 없습니다."),
+    NOT_FOUND_FILE_INFO(HttpStatus.NOT_FOUND, "5002", "해당 파일 정보가 없습니다."),
 
     // 토큰 관리
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "6001", "사용할 수 없는 토큰입니다.");

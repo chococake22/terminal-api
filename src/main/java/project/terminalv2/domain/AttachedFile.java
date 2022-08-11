@@ -32,10 +32,6 @@ public class AttachedFile extends BaseTime {
     @Column(name = "save_name")
     private String saveName;
 
-    @CreatedDate
-    @Column(name = "saved_date", updatable = false)
-    private LocalDateTime savedDate;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Board board;

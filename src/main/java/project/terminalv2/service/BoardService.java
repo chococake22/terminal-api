@@ -16,6 +16,7 @@ import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.respository.BoardSearchRepository;
+import project.terminalv2.util.JwtManager;
 import project.terminalv2.vo.board.BoardDetailVo;
 import project.terminalv2.vo.board.BoardListVo;
 
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final JwtService jwtService;
+    private final JwtManager jwtManager;
     private final UserService userService;
     private final ApiResponse apiResponse;
     private final BoardSearchRepository boardSearchRepository;
@@ -39,7 +40,7 @@ public class BoardService {
     public ApiResponse saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo) {
 
         String token = tokenInfo.getHeader("jwt");
-        String userId = jwtService.getSubject(token);
+        String userId = jwtManager.getSubject(token);
 
         Board board = Board.builder()
                 .title(request.getTitle())
@@ -105,8 +106,7 @@ public class BoardService {
     @Transactional
     public ApiResponse deleteBoard(Long boardNo, HttpServletRequest tokenInfo) {
 
-        Board board = boardRepository.findById(boardNo)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
+        Board board = getBoard(boardNo);
 
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
             boardRepository.deleteById(boardNo);
@@ -114,6 +114,11 @@ public class BoardService {
         } else {
             throw new ApiException(ErrorCode.BOARD_UNAUTHORIZED);
         }
+    }
+
+    public Board getBoard(Long boardNo) {
+        return boardRepository.findById(boardNo)
+                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
     }
 
     @Transactional

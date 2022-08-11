@@ -13,13 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 스프링 시큐리티 5.7 이상부터 설정 방식이 바꼈다.
+    // 스프링 시큐리티 5.7 이상부터 설정 방식이 변경됐다.
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -34,6 +33,4 @@ public class SecurityConfig {
         return http.build();
 
     }
-
-
 }

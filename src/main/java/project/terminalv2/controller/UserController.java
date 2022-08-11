@@ -1,16 +1,14 @@
 package project.terminalv2.controller;
 
 import io.swagger.annotations.ApiOperation;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import project.terminalv2.dto.user.UserLoginRequest;
 import project.terminalv2.dto.user.UserSaveRequest;
 import project.terminalv2.dto.user.UserUpdRequest;
 import project.terminalv2.exception.ApiResponse;
-import project.terminalv2.service.JwtService;
-
 import project.terminalv2.service.UserService;
+import project.terminalv2.util.JwtManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -22,7 +20,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final JwtService jwtService;
+    private final JwtManager jwtManager;
 
     @ApiOperation(value = "회원 생성", notes = "회원을 생성합니다.")
     @PostMapping("/api/v1/user")
@@ -59,6 +57,6 @@ public class UserController {
     @ApiOperation(value = "액세스 토큰 재발급", notes = "액세스 토큰을 재발급합니다.")
     @GetMapping("/api/v1/access-token")
     public Map<String, Object> getAccessToken(@RequestParam String token) {
-        return jwtService.getAccessToken(token);
+        return jwtManager.getAccessToken(token);
     }
 }

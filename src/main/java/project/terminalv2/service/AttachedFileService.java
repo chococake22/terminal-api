@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -40,8 +41,10 @@ import java.util.UUID;
 public class AttachedFileService {
 
     private final AttachedFileRepository attachedFileRepository;
+    private final BoardService boardService;
     private final BoardRepository boardRepository;
     private final UserService userService;
+    private final ApiResponse apiResponse;
 
     @Value("${file.dir}")
     private String fileDir;
@@ -101,8 +104,6 @@ public class AttachedFileService {
                 attachedFileRepository.save(attachedFile);
             }
 
-            ApiResponse apiResponse = new ApiResponse();
-
             return apiResponse.makeResponse(HttpStatus.OK, "6000", "파일 업로드 성공", fileResponseVos);
 
             // 파일의 경우 contentType를 따로 지정해야 하기 때문에 ApiResponse로 리턴하는 것보다 기존의 ResponseEntity를 이용하는 것이 낫다고 판단.
@@ -143,5 +144,39 @@ public class AttachedFileService {
                 .contentType(MediaType.MULTIPART_FORM_DATA) // 타입을 Multipart로 설정
                 .body(resource);
         // 파일의 경우 contentType를 따로 지정해야 하기 때문에 ApiResponse로 리턴하는 것보다 기존의 ResponseEntity를 이용하는 것이 낫다고 판단.
+    }
+
+    @Transactional
+    public ApiResponse deleteFile(Long boardNo, String fileName, HttpServletRequest tokenInfo) {
+
+        String userId = userService.getUserIdFromToken(tokenInfo);
+
+        // 해당 파일이 속한 게시글 조회
+        Board board = boardService.getBoard(boardNo);
+
+        // 작성자의 userNo와 로그인한 사용자의 userNo가 같으면 삭제함.
+        if (userId.equals(board.getWriter())) {
+
+            // 경로 생성
+            String path = getFullPath(fileName);
+
+            // 해당 경로에 있는 파일 가져오기
+            File file = new File(path);
+
+            // 파일 삭제
+            file.delete();
+
+            // 파일 정보 객체 존재 여부 파악
+            AttachedFile attachedFile = attachedFileRepository.findByBoard_BoardNoAndFilename(boardNo, fileName)
+                    .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_FILE_INFO));
+
+            // 파일 정보 객체 삭제
+            attachedFileRepository.delete(attachedFile);
+
+            return apiResponse.makeResponse(HttpStatus.OK, "6000", "파일 삭제 성공", null);
+
+        } else {
+            throw new ApiException(ErrorCode.USER_UNAUTHORIZED);
+        }
     }
 }

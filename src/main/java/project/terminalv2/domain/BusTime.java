@@ -1,9 +1,6 @@
 package project.terminalv2.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import project.terminalv2.dto.bustime.NewBusTimeSaveRequest;
 import project.terminalv2.vo.bustime.BusTimeInfoVo;
 
@@ -11,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 
-@Data
+@Getter
 @Table(name = "bus_time")
 @NoArgsConstructor
 @AllArgsConstructor

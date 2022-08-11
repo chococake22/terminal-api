@@ -21,7 +21,6 @@ public class BoardSearchRepository {
 
     private final EntityManager em;
 
-
     public List<Board> findBySearch(LocalDate startDate, LocalDate endDate, Integer page, Integer size, String search, SearchType searchType, BoardType boardType) {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);

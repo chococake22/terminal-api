@@ -18,6 +18,7 @@ import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.UserRepository;
+import project.terminalv2.util.JwtManager;
 import project.terminalv2.vo.user.UserDetailVo;
 import project.terminalv2.vo.user.UserListVo;
 
@@ -32,7 +33,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final JwtManager jwtManager;
     private final ApiResponse apiResponse;
 
     @Transactional
@@ -67,8 +68,8 @@ public class UserService {
 
             log.info("접속 userId={}", request.getUserId());
 
-            String accessToken = jwtService.createToken(user.getUserId());
-            String refreshToken = jwtService.createRefreshToken(user.getUserId());
+            String accessToken = jwtManager.createToken(user.getUserId());
+            String refreshToken = jwtManager.createRefreshToken(user.getUserId());
 
             // map -> vo로 묶을 필요가 있는지 점검
             Map<String, Object> map = new LinkedHashMap<>();
@@ -137,7 +138,7 @@ public class UserService {
     // 로그인한 사용자가 접근 권한이 있는지 판단
     public boolean hasAccessAuth(String userId, HttpServletRequest tokenInfo) {
         String token = tokenInfo.getHeader("jwt");
-        if(!userId.equals(jwtService.getSubject(token))) {
+        if(!userId.equals(jwtManager.getSubject(token))) {
             return false;
         }
         return true;
@@ -146,6 +147,6 @@ public class UserService {
     // 토큰으로부터 사용자 정보(아이디) 가져오기
     public String getUserIdFromToken(HttpServletRequest request) {
         String token = request.getHeader("jwt");
-        return jwtService.getSubject(token);
+        return jwtManager.getSubject(token);
     }
 }

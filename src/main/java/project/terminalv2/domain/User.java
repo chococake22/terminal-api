@@ -1,10 +1,7 @@
 package project.terminalv2.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.type.RoleType;
@@ -23,7 +20,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "user")
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

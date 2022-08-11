@@ -1,4 +1,4 @@
-package project.terminalv2.service;
+package project.terminalv2.util;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class JwtService {
+public class JwtManager {
 
     // 이 서버에서 사용하는 서명을 위한 키
     @Value("${security.jwt.token.secret-key}")

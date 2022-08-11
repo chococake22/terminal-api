@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.Board;
@@ -19,6 +18,7 @@ import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
 import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.respository.CommentRepository;
+import project.terminalv2.util.JwtManager;
 import project.terminalv2.vo.comment.CommentInfoVo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final UserService userService;
-    private final JwtService jwtService;
+    private final JwtManager jwtManager;
     private final ApiResponse apiResponse;
 
     @Transactional
@@ -41,7 +41,7 @@ public class CommentService {
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
 
         String token = tokenInfo.getHeader("jwt");
-        String userId = jwtService.getSubject(token);
+        String userId = jwtManager.getSubject(token);
 
         Comment comment = Comment.builder()
                 .writer(userId)

@@ -130,7 +130,6 @@ public class BusTimeService {
         }
     }
 
-
     @Transactional
     public ApiResponse deleteMyTime(Long myTimeNo, HttpServletRequest tokenInfo) {
 
