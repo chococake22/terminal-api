@@ -21,6 +21,7 @@ import project.terminalv2.respository.UserRepository;
 import project.terminalv2.util.JwtManager;
 import project.terminalv2.vo.user.UserDetailVo;
 import project.terminalv2.vo.user.UserListVo;
+import project.terminalv2.vo.user.UserLoginVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
@@ -72,14 +73,22 @@ public class UserService {
             String refreshToken = jwtManager.createRefreshToken(user.getUserId());
 
             // map -> vo로 묶을 필요가 있는지 점검
-            Map<String, Object> map = new LinkedHashMap<>();
-            map.put("accessToken", accessToken);
-            map.put("refreshToken", refreshToken);
-            map.put("userId", user.getUserId());
-            map.put("userNo", user.getUserNo());
-            map.put("role", user.getRole());
+//            Map<String, Object> map = new LinkedHashMap<>();
+//            map.put("accessToken", accessToken);
+//            map.put("refreshToken", refreshToken);
+//            map.put("userId", user.getUserId());
+//            map.put("userNo", user.getUserNo());
+//            map.put("role", user.getRole());
 
-            return apiResponse.makeResponse(HttpStatus.OK, "1000", "로그인 성공", map);
+            UserLoginVo userLoginVo = UserLoginVo.builder()
+                    .userNo(user.getUserNo())
+                    .userId(user.getUserId())
+                    .role(user.getRole())
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+
+            return apiResponse.makeResponse(HttpStatus.OK, "1000", "로그인 성공", userLoginVo);
         } else {
             throw new ApiException(ErrorCode.WRONG_PWD);
         }
