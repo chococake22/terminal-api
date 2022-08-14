@@ -6,6 +6,7 @@ import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.terminalv2.domain.AttachedFile;
 import project.terminalv2.domain.Board;
 import project.terminalv2.domain.type.BoardType;
 import project.terminalv2.domain.type.SearchType;
@@ -14,6 +15,7 @@ import project.terminalv2.dto.board.BoardUpdRequest;
 import project.terminalv2.exception.ApiException;
 import project.terminalv2.exception.ApiResponse;
 import project.terminalv2.exception.ErrorCode;
+import project.terminalv2.respository.AttachedFileRepository;
 import project.terminalv2.respository.BoardRepository;
 import project.terminalv2.respository.BoardSearchRepository;
 import project.terminalv2.util.JwtManager;
@@ -35,6 +37,7 @@ public class BoardService {
     private final UserService userService;
     private final ApiResponse apiResponse;
     private final BoardSearchRepository boardSearchRepository;
+    private final AttachedFileRepository attachedFileRepository;
 
     @Transactional
     public ApiResponse saveBoard(BoardSaveRequest request, HttpServletRequest tokenInfo) {
@@ -109,6 +112,9 @@ public class BoardService {
         Board board = getBoard(boardNo);
 
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
+
+            attachedFileRepository.deleteAllByBoardBoardNo(boardNo);
+
             boardRepository.deleteById(boardNo);
             return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 삭제 성공", null);
         } else {
@@ -126,30 +132,8 @@ public class BoardService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "boardNo"));
 
-//        Page<Board> boards;
-
-        // 카테고리별 검색
-//        if (SearchType.ofCode(type).equals(SearchType.TITLE)) {
-//            boards = boardRepository.findAllByTitleContaining(search, pageable);
-//        } else if (SearchType.ofCode(type).equals(SearchType.WRITER)) {
-//            boards = boardRepository.findAllByWriterContaining(search, pageable);
-//        } else if (SearchType.ofCode(type).equals(SearchType.CONTENT)) {
-//            boards = boardRepository.findAllByContentContaining(search, pageable);
-//        } else if(SearchType.ofCode(type).equals(SearchType.All) && search == null) {
-//            boards = boardRepository.findAll(pageable);
-//        } else {
-//            boards = boardRepository.findAllBySearch(search, pageable);
-//        }
-
-        // QueryDsL로 카테고리별 검색 기능 생성
+        // QueryDsl로 카테고리별 검색 기능 생성
         List<Board> boardList = boardSearchRepository.findBySearch(startDate, endDate, page, size, keyword, searchType, boardType);
-
-//        Page<BoardListVo> boardInfoVos = boardList.map(board -> BoardListVo.builder()
-//                .boardNo(board.getBoardNo())
-//                .boardType(board.getBoardType())
-//                .title(board.getTitle())
-//                .writer(board.getWriter())
-//                .build());
 
         // Board -> BoardListVo
         List<BoardListVo> boardListVos = boardList.stream()
@@ -161,13 +145,6 @@ public class BoardService {
 
         // list => page
         Page<BoardListVo> boardListVoPage = new PageImpl<>(boardListVos.subList(start, end), pageable, boardListVos.size());
-//
-//        Page<BoardListVo> boardListVos = boards.map(board -> BoardListVo.builder()
-//                .boardNo(board.getBoardNo())
-//                .boardType(board.getBoardType())
-//                .title(board.getTitle())
-//                .writer(board.getWriter())
-//                .build());
 
         return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 리스트 조회 성공", boardListVoPage);
     }

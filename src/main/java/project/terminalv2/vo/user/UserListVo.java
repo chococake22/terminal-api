@@ -2,8 +2,9 @@ package project.terminalv2.vo.user;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class UserListVo {
 

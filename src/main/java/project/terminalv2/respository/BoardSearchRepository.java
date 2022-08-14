@@ -51,6 +51,8 @@ public class BoardSearchRepository {
             return QBoard.board.writer.contains(search);
         } else if (searchType == SearchType.CONTENT) {
             return QBoard.board.content.contains(search);
+        } else if (searchType == SearchType.All) {
+            return QBoard.board.title.contains(search).or(QBoard.board.writer.contains(search)).or(QBoard.board.content.contains(search));
         } else {
             return null;
         }

@@ -1,10 +1,7 @@
 package project.terminalv2.vo.board;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import project.terminalv2.domain.Board;
 import project.terminalv2.domain.type.BoardType;
@@ -12,7 +9,7 @@ import project.terminalv2.domain.type.BoardType;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

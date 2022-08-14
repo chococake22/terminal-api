@@ -2,9 +2,10 @@ package project.terminalv2.vo.mytime;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import project.terminalv2.domain.MyTime;
 
-@Data
+@Getter
 @Builder
 public class MyTimeVo {
 
