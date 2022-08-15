@@ -46,7 +46,7 @@ public class CommentService {
         Comment comment = Comment.builder()
                 .writer(userId)
                 .content(request.getContent())
-                .boardNo(boardNo)
+                .board(board)
                 .build();
 
         commentRepository.save(comment);
@@ -59,7 +59,7 @@ public class CommentService {
     public ApiResponse getCommentList(Long boardNo, Integer page, Integer size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "commentNo"));
-        Page<Comment> comments = commentRepository.findAllByBoardNo(boardNo, pageable);
+        Page<Comment> comments = commentRepository.findAllByBoardBoardNo(boardNo, pageable);
         Page<CommentInfoVo> commentInfoVos = comments.map(comment -> comment.toCommentInfoVo(comment));
 
         return apiResponse.makeResponse(HttpStatus.OK, "3000", "댓글 리스트 조회 성공", commentInfoVos);

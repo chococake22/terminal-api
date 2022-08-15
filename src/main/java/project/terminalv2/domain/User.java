@@ -1,9 +1,11 @@
 package project.terminalv2.domain;
 
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import project.terminalv2.domain.type.RoleType;
 import project.terminalv2.dto.user.UserUpdRequest;
 import project.terminalv2.exception.ApiException;
@@ -59,11 +61,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    // 시간표를 삭제할 경우 내 시간표에 있는 해당 시간표도 삭제되어야 한다.
-    @OneToMany(mappedBy = "myTimeNo", cascade = CascadeType.ALL, orphanRemoval = true)
+    // User 삭제시 관련 MyTime도 같이 삭제
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MyTime> myBusTime = new ArrayList<>();
 
-    @Transactional
+
     public void updateInfo(UserUpdRequest request) {
 
         // 두 개의 확인 비밀번호가 같아야 한다.

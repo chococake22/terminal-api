@@ -7,6 +7,8 @@ import project.terminalv2.vo.board.BoardDetailVo;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "board")
@@ -36,6 +38,9 @@ public class Board extends BaseTime {
     @NotBlank
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     public void update(BoardUpdRequest request) {
         this.title = request.getTitle();

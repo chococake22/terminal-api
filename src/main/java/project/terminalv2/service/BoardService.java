@@ -6,7 +6,6 @@ import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.terminalv2.domain.AttachedFile;
 import project.terminalv2.domain.Board;
 import project.terminalv2.domain.type.BoardType;
 import project.terminalv2.domain.type.SearchType;
@@ -53,7 +52,6 @@ public class BoardService {
                 .build();
 
         boardRepository.save(board);
-
         BoardDetailVo boardDetailVo = board.toBoardDetailVo(board);
 
         return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 저장 성공", boardDetailVo);
@@ -65,9 +63,7 @@ public class BoardService {
 
         // 게시글 검색
         // 해당 게시글이 없으면 예외처리
-        Board board = boardRepository.findById(boardNo)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
-
+        Board board = getBoard(boardNo);
         BoardDetailVo boardDetailVo = board.toBoardDetailVo(board);
 
         return apiResponse.makeResponse(HttpStatus.OK, "2000", "개별 게시판 조회 성공", boardDetailVo);
@@ -92,14 +88,11 @@ public class BoardService {
     @Transactional
     public ApiResponse updateBoard(Long boardNo, BoardUpdRequest request, HttpServletRequest tokenInfo) {
 
-        Board board = boardRepository.findById(boardNo)
-                .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_BOARD));
+        Board board = getBoard(boardNo);
 
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
             board.update(request);
-
             BoardDetailVo boardDetailVo = board.toBoardDetailVo(board);
-
             return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 수정 성공", boardDetailVo);
         } else {
             throw new ApiException(ErrorCode.BOARD_UNAUTHORIZED);
@@ -112,10 +105,9 @@ public class BoardService {
         Board board = getBoard(boardNo);
 
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
-
             attachedFileRepository.deleteAllByBoardBoardNo(boardNo);
-
             boardRepository.deleteById(boardNo);
+
             return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 삭제 성공", null);
         } else {
             throw new ApiException(ErrorCode.BOARD_UNAUTHORIZED);

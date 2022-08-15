@@ -33,6 +33,6 @@ public class AttachedFile extends BaseTime {
     private String saveName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "board_no")
     private Board board;
 }

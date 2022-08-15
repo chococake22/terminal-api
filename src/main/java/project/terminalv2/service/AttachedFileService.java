@@ -122,8 +122,8 @@ public class AttachedFileService {
 
     // 확장자만 따로 추출하기
     private String extractExt(String originalFilename) {
-        int pos = originalFilename.lastIndexOf(".");
-        return originalFilename.substring(pos + 1);
+        int pos = originalFilename.lastIndexOf(".");    // .의 인덱스 찾기
+        return originalFilename.substring(pos + 1); // . 이후 문자열이 확장자가 된다
     }
 
     @Transactional

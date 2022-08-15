@@ -26,7 +26,6 @@ public class MyTime {
     @JoinColumn(name = "bus_time_no")
     private BusTime busTime;
 
-
     public MyTimeVo toMyTimeVo(MyTime myTime) {
         return MyTimeVo.builder()
                 .startTarget(myTime.getBusTime().getStartTarget())

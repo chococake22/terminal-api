@@ -20,7 +20,7 @@ public enum ErrorCode { // 에러 종류
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "2001", "게시글이 없습니다."),
     BOARD_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "2002", "권한이 없습니다."),
 
-    // 댓글 관리,
+    // 댓글 관리
     NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "3001", "해당 댓글이 없습니다."),
     COMMENT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "3002", "권한이 없습니다."),
 

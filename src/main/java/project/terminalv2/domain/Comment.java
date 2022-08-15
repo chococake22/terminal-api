@@ -32,9 +32,9 @@ public class Comment extends BaseTime {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @NotNull
-    @Column(name = "board_no")
-    private Long boardNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_no")
+    private Board board;
 
     public void update(CommentUpdRequest request) {
         this.content = request.getContent();
