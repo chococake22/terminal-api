@@ -55,7 +55,8 @@
 
 ### <DB 설계>
 
-![TerminalApi](https://user-images.githubusercontent.com/93370148/183649517-12398caa-a7cb-4267-a060-5114110a38f3.png)
+
+![TerminalApi](https://user-images.githubusercontent.com/93370148/184646626-f4638103-e7fc-4bc8-b131-72d1d70c9905.png)
 
 
 
