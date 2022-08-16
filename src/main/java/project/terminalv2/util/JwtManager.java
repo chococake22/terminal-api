@@ -96,7 +96,6 @@ public class JwtManager {
         try {
             Claims accessClaims = getClaimsFormToken(token);
             log.info("액세스 토큰 만료시간 : {}", accessClaims.getExpiration());
-            log.info("액세스 토큰에 담기 유저 아이디 : {}", accessClaims.get("userId"));
             return true;
         } catch (ExpiredJwtException e) {
             log.info("만료된 토큰입니다.");

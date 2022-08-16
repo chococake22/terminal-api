@@ -42,6 +42,9 @@ public class Board extends BaseTime {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AttachedFile> attachedFiles = new ArrayList<>();
+
     public void update(BoardUpdRequest request) {
         this.title = request.getTitle();
         this.boardType = BoardType.ofCode(request.getBoardTypeCode());

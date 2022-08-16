@@ -14,4 +14,12 @@ public enum RoleType {
     ADMIN("ROLE_ADMIN");
 
     private final String value;
+
+    // 요청별 상태 코드 반환
+    public static RoleType ofCode(String value) {
+        return Arrays.stream(values())
+                .filter(v -> v.getValue() == value)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("없는 유저권한입니다."));
+    }
 }

@@ -57,7 +57,6 @@ public class BoardService {
         return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 저장 성공", boardDetailVo);
     }
 
-
     @Transactional
     public ApiResponse getBoardInfoOne(Long boardNo) {
 
@@ -105,7 +104,6 @@ public class BoardService {
         Board board = getBoard(boardNo);
 
         if (userService.hasAccessAuth(board.getWriter(), tokenInfo)) {
-            attachedFileRepository.deleteAllByBoardBoardNo(boardNo);
             boardRepository.deleteById(boardNo);
 
             return apiResponse.makeResponse(HttpStatus.OK, "2000", "게시글 삭제 성공", null);
